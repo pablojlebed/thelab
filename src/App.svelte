@@ -1,7 +1,7 @@
 <script>
-  import { Activity, Beaker, Users, ShieldAlert, FileText, Settings, Menu } from 'lucide-svelte';
+  import { Activity, Beaker, Users, ShieldAlert, FileText, Settings, Menu, Home, BookOpen, Zap, Bell, Search, Archive, Database } from 'lucide-svelte';
   
-  let activeTab = $state('dashboard');
+  let activeTab = $state('hub');
   let isSidebarOpen = $state(true);
 
   function toggleSidebar() {
@@ -28,6 +28,7 @@
       <!-- Navigation -->
       <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
         {#each [
+          { id: 'hub', label: 'Control Center', icon: Home },
           { id: 'dashboard', label: 'Dashboard', icon: Activity },
           { id: 'instruments', label: 'Instruments', icon: Beaker },
           { id: 'personnel', label: 'Personnel', icon: Users },
@@ -90,7 +91,7 @@
         
         <!-- Page Header -->
         <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-semibold text-slate-900 capitalize">{activeTab}</h1>
+          <h1 class="text-2xl font-semibold text-slate-900 capitalize">{activeTab === 'hub' ? 'Control Center' : activeTab}</h1>
           <div class="flex space-x-3">
              <button class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                 Export Data
@@ -101,7 +102,148 @@
           </div>
         </div>
 
-        {#if activeTab === 'dashboard'}
+        {#if activeTab === 'hub'}
+            <!-- HUB VIEW -->
+            <!-- Search & Global Status -->
+            <div class="relative mb-8">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search class="h-5 w-5 text-slate-400" />
+                </div>
+                <input 
+                    type="text" 
+                    class="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 sm:text-sm shadow-sm transition-all" 
+                    placeholder="Search knowledge base, instruments, protocols..." 
+                />
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Control Panel -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Critical Admin Controls -->
+                    <div class="card-pastel p-6">
+                         <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-slate-800 flex items-center">
+                                <Zap class="w-5 h-5 mr-2 text-amber-500" />
+                                Control Board
+                            </h3>
+                            <button class="text-xs font-medium text-indigo-600 hover:text-indigo-800">Configure</button>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <button class="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:shadow-md hover:border-indigo-200 transition-all group">
+                                <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                                    <Archive class="w-5 h-5 text-emerald-600" />
+                                </div>
+                                <span class="text-xs font-medium text-slate-700 text-center">Batch Release</span>
+                            </button>
+                            <button class="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:shadow-md hover:border-indigo-200 transition-all group">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                                    <Users class="w-5 h-5 text-blue-600" />
+                                </div>
+                                <span class="text-xs font-medium text-slate-700 text-center">Access Control</span>
+                            </button>
+                             <button class="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:shadow-md hover:border-indigo-200 transition-all group">
+                                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                                    <Database class="w-5 h-5 text-purple-600" />
+                                </div>
+                                <span class="text-xs font-medium text-slate-700 text-center">Backup Sys</span>
+                            </button>
+                             <button class="flex flex-col items-center justify-center p-4 rounded-xl border border-red-100 bg-red-50 hover:bg-red-100 hover:shadow-md hover:border-red-200 transition-all group">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                                    <ShieldAlert class="w-5 h-5 text-red-600" />
+                                </div>
+                                <span class="text-xs font-medium text-red-700 text-center">Lockdown</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Knowledge Base Highlights -->
+                    <div class="card-pastel p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-slate-800 flex items-center">
+                                <BookOpen class="w-5 h-5 mr-2 text-indigo-500" />
+                                Knowledge Hub
+                            </h3>
+                            <button class="text-xs font-medium text-indigo-600 hover:text-indigo-800">View All</button>
+                        </div>
+                        <div class="divide-y divide-slate-100">
+                            <a href="#" class="flex items-start py-3 group">
+                                <div class="flex-shrink-0 mt-1">
+                                    <FileText class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors">Updated Standard Operating Procedure: ICP-MS Maintenance</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Updated by Dr. S. Chen • 2 hours ago</p>
+                                </div>
+                            </a>
+                             <a href="#" class="flex items-start py-3 group">
+                                <div class="flex-shrink-0 mt-1">
+                                    <FileText class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors">New Safety Protocol: Chemical Spill Containment v2.1</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Posted by Safety Committee • Yesterday</p>
+                                </div>
+                            </a>
+                             <a href="#" class="flex items-start py-3 group">
+                                <div class="flex-shrink-0 mt-1">
+                                    <FileText class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors">Calibration Logs Template 2024</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Resource • 3 days ago</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Live Feed / Notifications -->
+                <div class="space-y-6">
+                     <div class="card-pastel p-6 bg-gradient-to-br from-indigo-600 to-purple-700 text-white border-none shadow-indigo-200">
+                        <h3 class="font-medium text-indigo-100 text-sm mb-1">System Status</h3>
+                        <div class="flex items-baseline space-x-2">
+                             <span class="text-3xl font-bold">98.5%</span>
+                             <span class="text-sm text-indigo-200">Uptime</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-indigo-500/30 flex justify-between items-center text-sm">
+                            <span class="text-indigo-100">Pending Tasks</span>
+                            <span class="bg-indigo-500/50 px-2 py-0.5 rounded text-white font-medium">12</span>
+                        </div>
+                     </div>
+
+                     <div class="card-pastel p-6">
+                        <h3 class="font-semibold text-slate-800 mb-4 flex items-center">
+                            <Bell class="w-4 h-4 mr-2 text-slate-400" />
+                            Live Feed
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex space-x-3">
+                                <div class="w-2 h-2 mt-2 rounded-full bg-blue-500 flex-shrink-0"></div>
+                                <div>
+                                    <p class="text-sm text-slate-800"><span class="font-medium">Sarah J.</span> booked <span class="font-medium">Spectrometer A</span></p>
+                                    <p class="text-xs text-slate-500">10 mins ago</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3">
+                                <div class="w-2 h-2 mt-2 rounded-full bg-emerald-500 flex-shrink-0"></div>
+                                <div>
+                                    <p class="text-sm text-slate-800">Calibration completed for <span class="font-medium">Centrifuge B</span></p>
+                                    <p class="text-xs text-slate-500">45 mins ago</p>
+                                </div>
+                            </div>
+                             <div class="flex space-x-3">
+                                <div class="w-2 h-2 mt-2 rounded-full bg-amber-500 flex-shrink-0"></div>
+                                <div>
+                                    <p class="text-sm text-slate-800">Low Reagent Alert: <span class="font-medium">Ethanol 95%</span></p>
+                                    <p class="text-xs text-slate-500">1 hour ago</p>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+
+        {:else if activeTab === 'dashboard'}
             <!-- Dashboard Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Status Card -->
