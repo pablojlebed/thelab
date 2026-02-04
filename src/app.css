@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+  /* Base palette - matches kanban */
+  --color-pastel-bg: #F8FAFC;
+  --color-pastel-card: #FFFFFF;
+  --color-pastel-active: #EFF6FF;
+
+  /* Status colors for instruments */
+  --color-available: #DCFCE7;
+  --color-available-border: #86EFAC;
+  --color-available-text: #166534;
+
+  --color-booked: #FEE2E2;
+  --color-booked-border: #FCA5A5;
+  --color-booked-text: #991B1B;
+
+  --color-maintenance: #FEF3C7;
+  --color-maintenance-border: #FCD34D;
+  --color-maintenance-text: #92400E;
+
+  /* Category colors */
+  --color-cat-spectro: #F0F9FF;
+  --color-cat-spectro-border: #BAE6FD;
+  --color-cat-spectro-text: #0369A1;
+
+  --color-cat-chroma: #F5F3FF;
+  --color-cat-chroma-border: #DDD6FE;
+  --color-cat-chroma-text: #6D28D9;
+
+  --color-cat-elemental: #FFF1F2;
+  --color-cat-elemental-border: #FECDD3;
+  --color-cat-elemental-text: #BE123C;
+
+  --color-cat-general: #F0FDF4;
+  --color-cat-general-border: #BBF7D0;
+  --color-cat-general-text: #15803D;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    font-size: 16px;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      font-size: 18px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    html {
+      font-size: 20px;
+    }
+  }
+
+  @media (min-width: 1921px) {
+    html {
+      font-size: 22px;
+    }
+  }
+
+  body {
+    @apply bg-pastel-bg text-slate-800 font-sans antialiased overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply backdrop-blur-md bg-white/70 border border-white/40 shadow-sm;
+  }
+
+  .card-pastel {
+    @apply bg-white border border-slate-200 shadow-sm rounded-xl transition-all duration-200;
+  }
+
+  .status-available {
+    @apply bg-available border-available-border text-available-text;
+  }
+
+  .status-booked {
+    @apply bg-booked border-booked-border text-booked-text;
+  }
+
+  .status-maintenance {
+    @apply bg-maintenance border-maintenance-border text-maintenance-text;
+  }
+}
