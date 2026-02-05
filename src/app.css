@@ -6,6 +6,18 @@
   --color-pastel-card: #FFFFFF;
   --color-pastel-active: #EFF6FF;
 
+  --color-pastel-alpha: #FFF1F2;
+  --color-pastel-alpha-border: #FECDD3;
+  --color-pastel-alpha-text: #BE123C;
+
+  --color-pastel-beta: #F0F9FF;
+  --color-pastel-beta-border: #BAE6FD;
+  --color-pastel-beta-text: #0369A1;
+
+  --color-pastel-gamma: #F5F3FF;
+  --color-pastel-gamma-border: #DDD6FE;
+  --color-pastel-gamma-text: #6D28D9;
+
   /* Status colors for instruments */
   --color-available: #DCFCE7;
   --color-available-border: #86EFAC;

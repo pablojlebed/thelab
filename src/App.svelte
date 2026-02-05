@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import {
         Activity,
         Beaker,
@@ -18,7 +18,12 @@
         Scale,
         FileCheck,
         AlertTriangle,
+        Layout,
     } from "lucide-svelte";
+    import Board from "./lib/kanban/Board.svelte";
+    import ContextSelector from "./lib/kanban/ContextSelector.svelte";
+    import BookingSystem from "./lib/booking/BookingSystem.svelte";
+    import PersonnelView from "./lib/personnel/PersonnelView.svelte";
 
     let activeTab = $state("hub");
     let isSidebarOpen = $state(true);
@@ -26,6 +31,13 @@
     function toggleSidebar() {
         isSidebarOpen = !isSidebarOpen;
     }
+
+    // Kanban State
+    let kanbanContext = $state<"tasks" | "capa" | "ci">("tasks");
+    let kanbanSearchQuery = $state("");
+    let kanbanAssignee = $state("");
+    let kanbanAssignees = $state<string[]>([]);
+    let boardComponent: any = $state();
 </script>
 
 <div
@@ -52,7 +64,7 @@
 
             <!-- Navigation -->
             <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                {#each [{ id: "hub", label: "Control Center", icon: Home }, { id: "dashboard", label: "Dashboard", icon: Activity }, { id: "instruments", label: "Instruments", icon: Beaker }, { id: "personnel", label: "Personnel", icon: Users }, { id: "safety", label: "Safety & Incidents", icon: ShieldAlert }, { id: "quality", label: "Quality (ISO 17025)", icon: ClipboardCheck }, { id: "reports", label: "Reports", icon: FileText }] as item}
+                {#each [{ id: "hub", label: "Control Center", icon: Home }, { id: "kanban", label: "Kanban Board", icon: Layout }, { id: "dashboard", label: "Dashboard", icon: Activity }, { id: "instruments", label: "Instruments", icon: Beaker }, { id: "personnel", label: "Personnel", icon: Users }, { id: "safety", label: "Safety & Incidents", icon: ShieldAlert }, { id: "quality", label: "Quality (ISO 17025)", icon: ClipboardCheck }, { id: "reports", label: "Reports", icon: FileText }] as item}
                     <button
                         class={`w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
                             activeTab === item.id
@@ -126,20 +138,51 @@
                         {activeTab === "hub" ? "Control Center" : activeTab}
                     </h1>
                     <div class="flex space-x-3">
-                        <button
-                            class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-all"
-                        >
-                            Export Data
-                        </button>
-                        <button
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 transition-all"
-                        >
-                            New Entry
-                        </button>
+                        {#if activeTab === "kanban"}
+                            <div class="flex items-center gap-2">
+                                <ContextSelector
+                                    activeContext={kanbanContext}
+                                    on:change={(e) =>
+                                        (kanbanContext = e.detail as
+                                            | "tasks"
+                                            | "capa"
+                                            | "ci")}
+                                />
+                                <button
+                                    onclick={() => boardComponent.createTask()}
+                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 transition-all flex items-center gap-2"
+                                >
+                                    New Mission
+                                </button>
+                            </div>
+                        {:else}
+                            <button
+                                class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-all"
+                            >
+                                Export Data
+                            </button>
+                            <button
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 transition-all"
+                            >
+                                New Entry
+                            </button>
+                        {/if}
                     </div>
                 </div>
 
-                {#if activeTab === "hub"}
+                {#if activeTab === "kanban"}
+                    <div
+                        class="h-[calc(100vh-14rem)] bg-slate-50/50 rounded-2xl border border-slate-200/60 overflow-hidden"
+                    >
+                        <Board
+                            bind:this={boardComponent}
+                            bind:selectedAssignee={kanbanAssignee}
+                            bind:assignees={kanbanAssignees}
+                            context={kanbanContext}
+                            searchQuery={kanbanSearchQuery}
+                        />
+                    </div>
+                {:else if activeTab === "hub"}
                     <!-- HUB VIEW -->
                     <!-- Search & Global Status -->
                     <div class="relative mb-8">
@@ -641,6 +684,16 @@
                             </div>
                         </div>
                     </div>
+                {:else if activeTab === "instruments"}
+                    <div
+                        class="h-[calc(100vh-14rem)] bg-slate-50/50 rounded-2xl border border-slate-200/60 overflow-hidden"
+                    >
+                        <div class="h-full p-4">
+                            <BookingSystem />
+                        </div>
+                    </div>
+                {:else if activeTab === "personnel"}
+                    <PersonnelView />
                 {:else if activeTab === "quality"}
                     <!-- ISO 17025 Quality Management System -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
