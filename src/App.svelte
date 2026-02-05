@@ -14,6 +14,10 @@
         Search,
         Archive,
         Database,
+        ClipboardCheck,
+        Scale,
+        FileCheck,
+        AlertTriangle,
     } from "lucide-svelte";
 
     let activeTab = $state("hub");
@@ -48,7 +52,7 @@
 
             <!-- Navigation -->
             <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                {#each [{ id: "hub", label: "Control Center", icon: Home }, { id: "dashboard", label: "Dashboard", icon: Activity }, { id: "instruments", label: "Instruments", icon: Beaker }, { id: "personnel", label: "Personnel", icon: Users }, { id: "safety", label: "Safety & Incidents", icon: ShieldAlert }, { id: "reports", label: "Reports", icon: FileText }] as item}
+                {#each [{ id: "hub", label: "Control Center", icon: Home }, { id: "dashboard", label: "Dashboard", icon: Activity }, { id: "instruments", label: "Instruments", icon: Beaker }, { id: "personnel", label: "Personnel", icon: Users }, { id: "safety", label: "Safety & Incidents", icon: ShieldAlert }, { id: "quality", label: "Quality (ISO 17025)", icon: ClipboardCheck }, { id: "reports", label: "Reports", icon: FileText }] as item}
                     <button
                         class={`w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
                             activeTab === item.id
@@ -631,6 +635,243 @@
                                         <span
                                             class="text-xs text-yellow-500 mt-1 block"
                                             >Tomorrow</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {:else if activeTab === "quality"}
+                    <!-- ISO 17025 Quality Management System -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Compliance Overview -->
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div
+                                    class="card-pastel p-6 flex flex-col items-center justify-center text-center"
+                                >
+                                    <div
+                                        class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mb-3"
+                                    >
+                                        <FileCheck
+                                            class="w-6 h-6 text-emerald-600"
+                                        />
+                                    </div>
+                                    <span
+                                        class="text-2xl font-bold text-slate-800"
+                                        >98%</span
+                                    >
+                                    <span class="text-sm text-slate-500"
+                                        >Document Control</span
+                                    >
+                                </div>
+                                <div
+                                    class="card-pastel p-6 flex flex-col items-center justify-center text-center"
+                                >
+                                    <div
+                                        class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3"
+                                    >
+                                        <Scale class="w-6 h-6 text-blue-600" />
+                                    </div>
+                                    <span
+                                        class="text-2xl font-bold text-slate-800"
+                                        >100%</span
+                                    >
+                                    <span class="text-sm text-slate-500"
+                                        >Calibration Status</span
+                                    >
+                                </div>
+                                <div
+                                    class="card-pastel p-6 flex flex-col items-center justify-center text-center"
+                                >
+                                    <div
+                                        class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-3"
+                                    >
+                                        <AlertTriangle
+                                            class="w-6 h-6 text-amber-600"
+                                        />
+                                    </div>
+                                    <span
+                                        class="text-2xl font-bold text-slate-800"
+                                        >2</span
+                                    >
+                                    <span class="text-sm text-slate-500"
+                                        >Open NCs</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="card-pastel p-6">
+                                <h3
+                                    class="font-semibold text-slate-800 mb-4 flex items-center"
+                                >
+                                    <ClipboardCheck
+                                        class="w-5 h-5 mr-2 text-indigo-500"
+                                    />
+                                    Management Requirements (Clause 8)
+                                </h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button
+                                        class="p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-left group"
+                                    >
+                                        <span
+                                            class="block font-medium text-slate-700 group-hover:text-indigo-700"
+                                            >Document Control System</span
+                                        >
+                                        <span
+                                            class="text-xs text-slate-500 mt-1 block"
+                                            >Review SOPs, Manuals, and Forms</span
+                                        >
+                                    </button>
+                                    <button
+                                        class="p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-left group"
+                                    >
+                                        <span
+                                            class="block font-medium text-slate-700 group-hover:text-indigo-700"
+                                            >Non-Conforming Work</span
+                                        >
+                                        <span
+                                            class="text-xs text-slate-500 mt-1 block"
+                                            >Track and investigate issues</span
+                                        >
+                                    </button>
+                                    <button
+                                        class="p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-left group"
+                                    >
+                                        <span
+                                            class="block font-medium text-slate-700 group-hover:text-indigo-700"
+                                            >Internal Audits</span
+                                        >
+                                        <span
+                                            class="text-xs text-slate-500 mt-1 block"
+                                            >Schedule and record audits</span
+                                        >
+                                    </button>
+                                    <button
+                                        class="p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-left group"
+                                    >
+                                        <span
+                                            class="block font-medium text-slate-700 group-hover:text-indigo-700"
+                                            >Management Reviews</span
+                                        >
+                                        <span
+                                            class="text-xs text-slate-500 mt-1 block"
+                                            >Meeting minutes and action items</span
+                                        >
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Recent Activity/Technical -->
+                        <div class="space-y-6">
+                            <div
+                                class="card-pastel p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white border-none"
+                            >
+                                <h3
+                                    class="font-medium text-slate-200 text-sm mb-4"
+                                >
+                                    Technical Competence
+                                </h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div
+                                            class="flex justify-between text-xs mb-1"
+                                        >
+                                            <span class="text-slate-300"
+                                                >Proficiency Testing</span
+                                            >
+                                            <span class="text-emerald-400"
+                                                >Pass</span
+                                            >
+                                        </div>
+                                        <div
+                                            class="w-full bg-slate-700 rounded-full h-1.5"
+                                        >
+                                            <div
+                                                class="bg-emerald-500 h-1.5 rounded-full"
+                                                style="width: 100%"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="flex justify-between text-xs mb-1"
+                                        >
+                                            <span class="text-slate-300"
+                                                >Method Validation</span
+                                            >
+                                            <span class="text-blue-400"
+                                                >92%</span
+                                            >
+                                        </div>
+                                        <div
+                                            class="w-full bg-slate-700 rounded-full h-1.5"
+                                        >
+                                            <div
+                                                class="bg-blue-500 h-1.5 rounded-full"
+                                                style="width: 92%"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="flex justify-between text-xs mb-1"
+                                        >
+                                            <span class="text-slate-300"
+                                                >Training Records</span
+                                            >
+                                            <span class="text-amber-400"
+                                                >85%</span
+                                            >
+                                        </div>
+                                        <div
+                                            class="w-full bg-slate-700 rounded-full h-1.5"
+                                        >
+                                            <div
+                                                class="bg-amber-500 h-1.5 rounded-full"
+                                                style="width: 85%"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-pastel p-6">
+                                <h3 class="font-semibold text-slate-800 mb-4">
+                                    Action Required
+                                </h3>
+                                <div class="space-y-3">
+                                    <div
+                                        class="p-3 bg-amber-50 rounded-lg border border-amber-100"
+                                    >
+                                        <h4
+                                            class="text-sm font-medium text-amber-800"
+                                        >
+                                            SOP-005 Expiring Soon
+                                        </h4>
+                                        <p class="text-xs text-amber-600 mt-1">
+                                            Review "Sample Handling" by Feb 10.
+                                        </p>
+                                        <button
+                                            class="mt-2 text-xs font-semibold text-amber-700 hover:text-amber-900"
+                                            >Start Review →</button
+                                        >
+                                    </div>
+                                    <div
+                                        class="p-3 bg-red-50 rounded-lg border border-red-100"
+                                    >
+                                        <h4
+                                            class="text-sm font-medium text-red-800"
+                                        >
+                                            Missed QC Check
+                                        </h4>
+                                        <p class="text-xs text-red-600 mt-1">
+                                            HPLC-03 failed daily verification.
+                                        </p>
+                                        <button
+                                            class="mt-2 text-xs font-semibold text-red-700 hover:text-red-900"
+                                            >View Incident →</button
                                         >
                                     </div>
                                 </div>
