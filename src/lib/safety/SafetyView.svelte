@@ -116,8 +116,6 @@
     ];
 
     // Subscribe to store
-    $: recentIncidents = $safetyStore.filter((i) => i.status !== "draft");
-    $: draftIncidents = $safetyStore.filter((i) => i.status === "draft");
 
     function getDaysUntil(date: Date): number {
         const now = new Date();
@@ -213,14 +211,14 @@
     <!-- Header Actions -->
     <div class="flex justify-end gap-3">
         <button
-            on:click={() => exportToCSV(recentIncidents, "safety_incidents")}
+            onclick={() => exportToCSV(recentIncidents, "safety_incidents")}
             class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2"
         >
             <FileText size={16} />
             Export Data
         </button>
         <button
-            on:click={() => openReportModal("near-miss")}
+            onclick={() => openReportModal("near-miss")}
             class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 transition-all"
         >
             New Entry
@@ -530,7 +528,7 @@
                                     </p>
                                 </div>
                                 <button
-                                    on:click={() => handleDraftSubmit(draft)}
+                                    onclick={() => handleDraftSubmit(draft)}
                                     class="px-3 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 shadow-sm shadow-indigo-200 transition-all"
                                 >
                                     Review & Submit
