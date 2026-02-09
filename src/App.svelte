@@ -19,11 +19,16 @@
         FileCheck,
         AlertTriangle,
         Layout,
+        ArrowRight,
     } from "lucide-svelte";
     import Board from "./lib/kanban/Board.svelte";
     import ContextSelector from "./lib/kanban/ContextSelector.svelte";
     import BookingSystem from "./lib/booking/BookingSystem.svelte";
     import PersonnelView from "./lib/personnel/PersonnelView.svelte";
+    import SafetyView from "./lib/safety/SafetyView.svelte";
+    import QualityView from "./lib/quality/QualityView.svelte";
+    import ReportsView from "./lib/reports/ReportsView.svelte";
+    import { safetyStore } from "./lib/stores/safetyStore";
 
     let activeTab = $state("hub");
     let isSidebarOpen = $state(true);
@@ -38,6 +43,18 @@
     let kanbanAssignee = $state("");
     let kanbanAssignees = $state<string[]>([]);
     let boardComponent: any = $state();
+
+    function handleSimulateAlarm() {
+        safetyStore.addDraft({
+            title: "Fume Hood Alarm",
+            description:
+                "Automated alert: Fume Hood #2 airflow dropped below threshold during operation.",
+            severity: "major",
+            location: "Lab 2 (Analysis)",
+            reportedBy: "System Automation",
+        });
+        activeTab = "safety";
+    }
 </script>
 
 <div
@@ -51,12 +68,12 @@
             <!-- Logo Area -->
             <div class="h-16 flex items-center px-6 border-b border-slate-100">
                 <div
-                    class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center mr-3 shadow-sm"
+                    class="w-8 h-8 rounded-lg bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center mr-3 shadow-sm"
                 >
                     <Beaker class="w-5 h-5 text-white" />
                 </div>
                 <span
-                    class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-600"
+                    class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-linear-to-r from-slate-800 to-slate-600"
                 >
                     RadioAnalysis
                 </span>
@@ -152,20 +169,9 @@
                                     onclick={() => boardComponent.createTask()}
                                     class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 transition-all flex items-center gap-2"
                                 >
-                                    New Mission
+                                    New Task
                                 </button>
                             </div>
-                        {:else}
-                            <button
-                                class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-all"
-                            >
-                                Export Data
-                            </button>
-                            <button
-                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 transition-all"
-                            >
-                                New Entry
-                            </button>
                         {/if}
                     </div>
                 </div>
@@ -193,7 +199,7 @@
                         </div>
                         <input
                             type="text"
-                            class="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 sm:text-sm shadow-sm transition-all"
+                            class="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 focus:shadow-[0_0_0_4px_rgba(99,102,241,0.1)] sm:text-sm shadow-sm transition-all"
                             placeholder="Search knowledge base, instruments, protocols..."
                         />
                     </div>
@@ -268,17 +274,28 @@
                                         >
                                     </button>
                                     <button
-                                        class="flex flex-col items-center justify-center p-4 rounded-xl border border-red-100 bg-red-50 hover:bg-red-100 hover:shadow-md hover:border-red-200 transition-all group"
+                                        class="relative flex flex-col items-center justify-center p-4 rounded-xl border-2 border-red-300 bg-linear-to-b from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 hover:shadow-lg hover:border-red-400 transition-all group ring-2 ring-red-200/50"
+                                        onclick={() => {
+                                            if (
+                                                !confirm(
+                                                    "⚠️ LOCKDOWN MODE\n\nThis will immediately restrict all lab access.\n\nAre you absolutely sure?",
+                                                )
+                                            )
+                                                return;
+                                        }}
                                     >
                                         <div
-                                            class="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-2 group-hover:scale-110 transition-transform"
+                                            class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500 animate-pulse"
+                                        ></div>
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-white border-2 border-red-300 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:border-red-500 transition-all shadow-inner"
                                         >
                                             <ShieldAlert
                                                 class="w-5 h-5 text-red-600"
                                             />
                                         </div>
                                         <span
-                                            class="text-xs font-medium text-red-700 text-center"
+                                            class="text-xs font-bold text-red-700 text-center uppercase tracking-wide"
                                             >Lockdown</span
                                         >
                                     </button>
@@ -306,23 +323,21 @@
                                 <div class="divide-y divide-slate-100">
                                     <button
                                         type="button"
-                                        class="w-full text-left flex items-start py-3 group"
+                                        class="w-full text-left flex items-start py-2 group"
                                     >
-                                        <div class="flex-shrink-0 mt-1">
+                                        <div class="shrink-0 mt-0.5">
                                             <FileText
                                                 class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors"
                                             />
                                         </div>
-                                        <div class="ml-3">
+                                        <div class="ml-2">
                                             <p
-                                                class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors"
+                                                class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors leading-tight"
                                             >
                                                 Updated Standard Operating
                                                 Procedure: ICP-MS Maintenance
                                             </p>
-                                            <p
-                                                class="text-xs text-slate-500 mt-0.5"
-                                            >
+                                            <p class="text-xs text-slate-500">
                                                 Updated by Dr. S. Chen • 2 hours
                                                 ago
                                             </p>
@@ -330,23 +345,21 @@
                                     </button>
                                     <button
                                         type="button"
-                                        class="w-full text-left flex items-start py-3 group"
+                                        class="w-full text-left flex items-start py-2 group"
                                     >
-                                        <div class="flex-shrink-0 mt-1">
+                                        <div class="shrink-0 mt-0.5">
                                             <FileText
                                                 class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors"
                                             />
                                         </div>
-                                        <div class="ml-3">
+                                        <div class="ml-2">
                                             <p
-                                                class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors"
+                                                class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors leading-tight"
                                             >
                                                 New Safety Protocol: Chemical
                                                 Spill Containment v2.1
                                             </p>
-                                            <p
-                                                class="text-xs text-slate-500 mt-0.5"
-                                            >
+                                            <p class="text-xs text-slate-500">
                                                 Posted by Safety Committee •
                                                 Yesterday
                                             </p>
@@ -354,22 +367,20 @@
                                     </button>
                                     <button
                                         type="button"
-                                        class="w-full text-left flex items-start py-3 group"
+                                        class="w-full text-left flex items-start py-2 group"
                                     >
-                                        <div class="flex-shrink-0 mt-1">
+                                        <div class="shrink-0 mt-0.5">
                                             <FileText
                                                 class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors"
                                             />
                                         </div>
-                                        <div class="ml-3">
+                                        <div class="ml-2">
                                             <p
-                                                class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors"
+                                                class="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors leading-tight"
                                             >
                                                 Calibration Logs Template 2024
                                             </p>
-                                            <p
-                                                class="text-xs text-slate-500 mt-0.5"
-                                            >
+                                            <p class="text-xs text-slate-500">
                                                 Resource • 3 days ago
                                             </p>
                                         </div>
@@ -381,28 +392,39 @@
                         <!-- Right Side: Live Feed / Notifications -->
                         <div class="space-y-6">
                             <div
-                                class="card-pastel p-6 bg-gradient-to-br from-indigo-600 to-purple-700 text-white border-none shadow-indigo-200"
+                                class="card-pastel p-5 bg-linear-to-br from-slate-50 to-slate-100 border border-slate-200"
                             >
                                 <h3
-                                    class="font-medium text-indigo-100 text-sm mb-1"
+                                    class="font-medium text-slate-500 text-sm mb-1"
                                 >
                                     System Status
                                 </h3>
                                 <div class="flex items-baseline space-x-2">
-                                    <span class="text-3xl font-bold">98.5%</span
+                                    <span
+                                        class="text-3xl font-bold text-slate-800"
+                                        >98.5%</span
                                     >
-                                    <span class="text-sm text-indigo-200"
+                                    <span class="text-sm text-slate-500"
                                         >Uptime</span
                                     >
                                 </div>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span
+                                        class="inline-flex h-2 w-2 rounded-full bg-emerald-500"
+                                    ></span>
+                                    <span
+                                        class="text-xs text-emerald-600 font-medium"
+                                        >All systems operational</span
+                                    >
+                                </div>
                                 <div
-                                    class="mt-4 pt-4 border-t border-indigo-500/30 flex justify-between items-center text-sm"
+                                    class="mt-3 pt-3 border-t border-slate-200 flex justify-between items-center text-sm"
                                 >
-                                    <span class="text-indigo-100"
+                                    <span class="text-slate-600"
                                         >Pending Tasks</span
                                     >
                                     <span
-                                        class="bg-indigo-500/50 px-2 py-0.5 rounded text-white font-medium"
+                                        class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-medium"
                                         >12</span
                                     >
                                 </div>
@@ -415,13 +437,15 @@
                                     <Bell class="w-4 h-4 mr-2 text-slate-400" />
                                     Live Feed
                                 </h3>
-                                <div class="space-y-4">
-                                    <div class="flex space-x-3">
+                                <div class="space-y-2">
+                                    <div class="flex space-x-2">
                                         <div
-                                            class="w-2 h-2 mt-2 rounded-full bg-blue-500 flex-shrink-0"
+                                            class="w-2 h-2 mt-1.5 rounded-full bg-blue-500 shrink-0"
                                         ></div>
                                         <div>
-                                            <p class="text-sm text-slate-800">
+                                            <p
+                                                class="text-sm text-slate-800 leading-tight"
+                                            >
                                                 <span class="font-medium"
                                                     >Sarah J.</span
                                                 >
@@ -435,12 +459,14 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="flex space-x-3">
+                                    <div class="flex space-x-2">
                                         <div
-                                            class="w-2 h-2 mt-2 rounded-full bg-emerald-500 flex-shrink-0"
+                                            class="w-2 h-2 mt-1.5 rounded-full bg-emerald-500 shrink-0"
                                         ></div>
                                         <div>
-                                            <p class="text-sm text-slate-800">
+                                            <p
+                                                class="text-sm text-slate-800 leading-tight"
+                                            >
                                                 Calibration completed for <span
                                                     class="font-medium"
                                                     >Centrifuge B</span
@@ -451,12 +477,14 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="flex space-x-3">
+                                    <div class="flex space-x-2">
                                         <div
-                                            class="w-2 h-2 mt-2 rounded-full bg-amber-500 flex-shrink-0"
+                                            class="w-2 h-2 mt-1.5 rounded-full bg-amber-500 shrink-0"
                                         ></div>
                                         <div>
-                                            <p class="text-sm text-slate-800">
+                                            <p
+                                                class="text-sm text-slate-800 leading-tight"
+                                            >
                                                 Low Reagent Alert: <span
                                                     class="font-medium"
                                                     >Ethanol 95%</span
@@ -582,8 +610,12 @@
                             </h3>
                             <div class="grid grid-cols-2 gap-3">
                                 <button
-                                    class="p-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 rounded-lg text-left transition-colors group"
+                                    class="p-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 rounded-lg text-left transition-colors group relative"
                                 >
+                                    <ArrowRight
+                                        size={14}
+                                        class="absolute top-3 right-3 text-indigo-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all"
+                                    />
                                     <span
                                         class="block text-indigo-700 font-medium text-sm group-hover:text-indigo-800"
                                         >Log Calibration</span
@@ -594,8 +626,12 @@
                                     >
                                 </button>
                                 <button
-                                    class="p-3 bg-amber-50 hover:bg-amber-100 border border-amber-100 rounded-lg text-left transition-colors group"
+                                    class="p-3 bg-amber-50 hover:bg-amber-100 border border-amber-100 rounded-lg text-left transition-colors group relative"
                                 >
+                                    <ArrowRight
+                                        size={14}
+                                        class="absolute top-3 right-3 text-amber-300 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all"
+                                    />
                                     <span
                                         class="block text-amber-700 font-medium text-sm group-hover:text-amber-800"
                                         >Report Issue</span
@@ -606,8 +642,12 @@
                                     >
                                 </button>
                                 <button
-                                    class="p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 rounded-lg text-left transition-colors group"
+                                    class="p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 rounded-lg text-left transition-colors group relative"
                                 >
+                                    <ArrowRight
+                                        size={14}
+                                        class="absolute top-3 right-3 text-emerald-300 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all"
+                                    />
                                     <span
                                         class="block text-emerald-700 font-medium text-sm group-hover:text-emerald-800"
                                         >Check-in Visitors</span
@@ -618,8 +658,12 @@
                                     >
                                 </button>
                                 <button
-                                    class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-left transition-colors group"
+                                    class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-left transition-colors group relative"
                                 >
+                                    <ArrowRight
+                                        size={14}
+                                        class="absolute top-3 right-3 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all"
+                                    />
                                     <span
                                         class="block text-slate-700 font-medium text-sm group-hover:text-slate-800"
                                         >View Schedule</span
@@ -633,9 +677,20 @@
                         </div>
 
                         <div class="card-pastel p-6">
-                            <h3 class="font-semibold text-slate-800 mb-4">
-                                Recent Alerts
-                            </h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3
+                                    class="font-semibold text-slate-800 flex items-center"
+                                >
+                                    <Bell class="w-4 h-4 mr-2 text-slate-400" />
+                                    Recent Alerts
+                                </h3>
+                                <button
+                                    onclick={handleSimulateAlarm}
+                                    class="text-xs text-red-600 font-medium hover:text-red-700 border border-red-200 bg-red-50 px-2 py-1 rounded transition-colors"
+                                >
+                                    Simulate Alarm
+                                </button>
+                            </div>
                             <div class="space-y-3">
                                 <div
                                     class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg border border-red-100"
@@ -694,243 +749,12 @@
                     </div>
                 {:else if activeTab === "personnel"}
                     <PersonnelView />
+                {:else if activeTab === "safety"}
+                    <SafetyView />
                 {:else if activeTab === "quality"}
-                    <!-- ISO 17025 Quality Management System -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Compliance Overview -->
-                        <div class="lg:col-span-2 space-y-6">
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div
-                                    class="card-pastel p-6 flex flex-col items-center justify-center text-center"
-                                >
-                                    <div
-                                        class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mb-3"
-                                    >
-                                        <FileCheck
-                                            class="w-6 h-6 text-emerald-600"
-                                        />
-                                    </div>
-                                    <span
-                                        class="text-2xl font-bold text-slate-800"
-                                        >98%</span
-                                    >
-                                    <span class="text-sm text-slate-500"
-                                        >Document Control</span
-                                    >
-                                </div>
-                                <div
-                                    class="card-pastel p-6 flex flex-col items-center justify-center text-center"
-                                >
-                                    <div
-                                        class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3"
-                                    >
-                                        <Scale class="w-6 h-6 text-blue-600" />
-                                    </div>
-                                    <span
-                                        class="text-2xl font-bold text-slate-800"
-                                        >100%</span
-                                    >
-                                    <span class="text-sm text-slate-500"
-                                        >Calibration Status</span
-                                    >
-                                </div>
-                                <div
-                                    class="card-pastel p-6 flex flex-col items-center justify-center text-center"
-                                >
-                                    <div
-                                        class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-3"
-                                    >
-                                        <AlertTriangle
-                                            class="w-6 h-6 text-amber-600"
-                                        />
-                                    </div>
-                                    <span
-                                        class="text-2xl font-bold text-slate-800"
-                                        >2</span
-                                    >
-                                    <span class="text-sm text-slate-500"
-                                        >Open NCs</span
-                                    >
-                                </div>
-                            </div>
-
-                            <div class="card-pastel p-6">
-                                <h3
-                                    class="font-semibold text-slate-800 mb-4 flex items-center"
-                                >
-                                    <ClipboardCheck
-                                        class="w-5 h-5 mr-2 text-indigo-500"
-                                    />
-                                    Management Requirements (Clause 8)
-                                </h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <button
-                                        class="p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-left group"
-                                    >
-                                        <span
-                                            class="block font-medium text-slate-700 group-hover:text-indigo-700"
-                                            >Document Control System</span
-                                        >
-                                        <span
-                                            class="text-xs text-slate-500 mt-1 block"
-                                            >Review SOPs, Manuals, and Forms</span
-                                        >
-                                    </button>
-                                    <button
-                                        class="p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-left group"
-                                    >
-                                        <span
-                                            class="block font-medium text-slate-700 group-hover:text-indigo-700"
-                                            >Non-Conforming Work</span
-                                        >
-                                        <span
-                                            class="text-xs text-slate-500 mt-1 block"
-                                            >Track and investigate issues</span
-                                        >
-                                    </button>
-                                    <button
-                                        class="p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-left group"
-                                    >
-                                        <span
-                                            class="block font-medium text-slate-700 group-hover:text-indigo-700"
-                                            >Internal Audits</span
-                                        >
-                                        <span
-                                            class="text-xs text-slate-500 mt-1 block"
-                                            >Schedule and record audits</span
-                                        >
-                                    </button>
-                                    <button
-                                        class="p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-left group"
-                                    >
-                                        <span
-                                            class="block font-medium text-slate-700 group-hover:text-indigo-700"
-                                            >Management Reviews</span
-                                        >
-                                        <span
-                                            class="text-xs text-slate-500 mt-1 block"
-                                            >Meeting minutes and action items</span
-                                        >
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Column: Recent Activity/Technical -->
-                        <div class="space-y-6">
-                            <div
-                                class="card-pastel p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white border-none"
-                            >
-                                <h3
-                                    class="font-medium text-slate-200 text-sm mb-4"
-                                >
-                                    Technical Competence
-                                </h3>
-                                <div class="space-y-4">
-                                    <div>
-                                        <div
-                                            class="flex justify-between text-xs mb-1"
-                                        >
-                                            <span class="text-slate-300"
-                                                >Proficiency Testing</span
-                                            >
-                                            <span class="text-emerald-400"
-                                                >Pass</span
-                                            >
-                                        </div>
-                                        <div
-                                            class="w-full bg-slate-700 rounded-full h-1.5"
-                                        >
-                                            <div
-                                                class="bg-emerald-500 h-1.5 rounded-full"
-                                                style="width: 100%"
-                                            ></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="flex justify-between text-xs mb-1"
-                                        >
-                                            <span class="text-slate-300"
-                                                >Method Validation</span
-                                            >
-                                            <span class="text-blue-400"
-                                                >92%</span
-                                            >
-                                        </div>
-                                        <div
-                                            class="w-full bg-slate-700 rounded-full h-1.5"
-                                        >
-                                            <div
-                                                class="bg-blue-500 h-1.5 rounded-full"
-                                                style="width: 92%"
-                                            ></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="flex justify-between text-xs mb-1"
-                                        >
-                                            <span class="text-slate-300"
-                                                >Training Records</span
-                                            >
-                                            <span class="text-amber-400"
-                                                >85%</span
-                                            >
-                                        </div>
-                                        <div
-                                            class="w-full bg-slate-700 rounded-full h-1.5"
-                                        >
-                                            <div
-                                                class="bg-amber-500 h-1.5 rounded-full"
-                                                style="width: 85%"
-                                            ></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card-pastel p-6">
-                                <h3 class="font-semibold text-slate-800 mb-4">
-                                    Action Required
-                                </h3>
-                                <div class="space-y-3">
-                                    <div
-                                        class="p-3 bg-amber-50 rounded-lg border border-amber-100"
-                                    >
-                                        <h4
-                                            class="text-sm font-medium text-amber-800"
-                                        >
-                                            SOP-005 Expiring Soon
-                                        </h4>
-                                        <p class="text-xs text-amber-600 mt-1">
-                                            Review "Sample Handling" by Feb 10.
-                                        </p>
-                                        <button
-                                            class="mt-2 text-xs font-semibold text-amber-700 hover:text-amber-900"
-                                            >Start Review →</button
-                                        >
-                                    </div>
-                                    <div
-                                        class="p-3 bg-red-50 rounded-lg border border-red-100"
-                                    >
-                                        <h4
-                                            class="text-sm font-medium text-red-800"
-                                        >
-                                            Missed QC Check
-                                        </h4>
-                                        <p class="text-xs text-red-600 mt-1">
-                                            HPLC-03 failed daily verification.
-                                        </p>
-                                        <button
-                                            class="mt-2 text-xs font-semibold text-red-700 hover:text-red-900"
-                                            >View Incident →</button
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <QualityView />
+                {:else if activeTab === "reports"}
+                    <ReportsView />
                 {:else}
                     <!-- Placeholder for other tabs -->
                     <div class="card-pastel p-12 text-center">

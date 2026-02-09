@@ -7,6 +7,7 @@ export type Task = {
     status: string;     // Column ID
     board_id: string;
     category?: 'task' | 'capa' | 'ci'; // New field for type
+    due_date?: string;  // ISO date string for deadline
     created_at?: string;
 };
 

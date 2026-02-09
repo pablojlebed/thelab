@@ -7,6 +7,7 @@
         FlaskConical,
         Calendar,
         Wrench,
+        Bell,
     } from "lucide-svelte";
     import { onMount, onDestroy, createEventDispatcher } from "svelte";
     import VanillaTilt from "vanilla-tilt";
@@ -15,6 +16,7 @@
 
     let cardElement: HTMLElement;
     let tiltInstance: any;
+    let notifyWhenAvailable = false;
     const dispatch = createEventDispatcher();
 
     onMount(() => {
@@ -155,12 +157,38 @@
                 Book Now
             </button>
         {:else if instrument.status === "maintenance"}
-            <span class="flex items-center gap-1.5 text-xs text-amber-600">
-                <Wrench size={14} />
-                Under Maintenance
-            </span>
+            <div class="flex items-center gap-2">
+                <button
+                    on:click|stopPropagation={() =>
+                        (notifyWhenAvailable = !notifyWhenAvailable)}
+                    class="p-1.5 rounded-lg border transition-colors {notifyWhenAvailable
+                        ? 'bg-indigo-50 border-indigo-200 text-indigo-600'
+                        : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-slate-600 hover:border-slate-300'}"
+                    title={notifyWhenAvailable
+                        ? "Notification set"
+                        : "Notify me when available"}
+                >
+                    <Bell
+                        size={14}
+                        class={notifyWhenAvailable ? "fill-indigo-600" : ""}
+                    />
+                </button>
+                <button
+                    disabled
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-600 text-sm font-medium rounded-lg border border-amber-200 cursor-not-allowed"
+                >
+                    <Wrench size={14} />
+                    Maintenance
+                </button>
+            </div>
         {:else}
-            <span class="text-xs text-slate-400">Currently booked</span>
+            <button
+                disabled
+                class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-400 text-sm font-medium rounded-lg border border-slate-200 cursor-not-allowed"
+            >
+                <Calendar size={14} />
+                Booked
+            </button>
         {/if}
     </div>
 </div>

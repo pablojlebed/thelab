@@ -10,6 +10,7 @@
         AlertCircle,
         CheckCircle2,
         Clock,
+        Calendar,
     } from "lucide-svelte";
     import { onMount, onDestroy, createEventDispatcher } from "svelte";
     import VanillaTilt from "vanilla-tilt";
@@ -59,6 +60,45 @@
         if (p === "medium" || p === "gamma") return Clock;
         return CheckCircle2;
     }
+
+    // Avatar color based on owner name
+    function getAvatarColor(name: string): string {
+        if (!name) return "bg-slate-200 text-slate-500";
+        const colors = [
+            "bg-indigo-100 text-indigo-700",
+            "bg-emerald-100 text-emerald-700",
+            "bg-amber-100 text-amber-700",
+            "bg-rose-100 text-rose-700",
+            "bg-purple-100 text-purple-700",
+            "bg-cyan-100 text-cyan-700",
+        ];
+        const hash = name.charCodeAt(0) % colors.length;
+        return colors[hash];
+    }
+
+    // Date formatting and overdue check
+    function formatDueDate(dateStr: string | undefined): {
+        text: string;
+        isOverdue: boolean;
+    } {
+        if (!dateStr) return { text: "", isOverdue: false };
+        const date = new Date(dateStr);
+        const now = new Date();
+        const isOverdue = date < now;
+
+        // Format as "Feb 9" or "Feb 9, 2027" if different year
+        const sameYear = date.getFullYear() === now.getFullYear();
+        const options: Intl.DateTimeFormatOptions = sameYear
+            ? { month: "short", day: "numeric" }
+            : { month: "short", day: "numeric", year: "numeric" };
+
+        return {
+            text: date.toLocaleDateString("en-US", options),
+            isOverdue,
+        };
+    }
+
+    $: dueInfo = formatDueDate(task.due_date);
 
     function handleCardClick() {
         dispatch("openDetail", task);
@@ -110,14 +150,17 @@
         class="flex items-center justify-between border-t border-slate-100 pt-2 mt-2"
     >
         <div class="flex items-center gap-3">
+            <!-- Enhanced Owner Avatar -->
             <div class="flex items-center gap-1.5">
                 <div
-                    class="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-500"
+                    class="w-5 h-5 rounded-full {getAvatarColor(
+                        task.owner,
+                    )} flex items-center justify-center text-[9px] font-bold ring-1 ring-white shadow-sm"
                 >
                     {task.owner ? task.owner.charAt(0).toUpperCase() : "?"}
                 </div>
                 <span
-                    class="text-xs font-medium text-slate-500 max-w-[80px] truncate"
+                    class="text-xs font-medium text-slate-500 max-w-[70px] truncate"
                 >
                     {task.owner}
                 </span>
@@ -126,6 +169,19 @@
                 <span class="flex items-center gap-1 text-xs text-slate-400">
                     <MessageSquare size={12} />
                     {commentCount}
+                </span>
+            {/if}
+            {#if dueInfo.text}
+                <span
+                    class="flex items-center gap-1 text-xs {dueInfo.isOverdue
+                        ? 'text-red-600 font-semibold'
+                        : 'text-slate-400'}"
+                >
+                    <Calendar
+                        size={12}
+                        class={dueInfo.isOverdue ? "text-red-600" : ""}
+                    />
+                    {dueInfo.text}
                 </span>
             {/if}
         </div>

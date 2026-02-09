@@ -10,8 +10,39 @@
     export let onDrop: (items: Task[]) => void;
     export let dragDisabled = false;
     export let commentCounts: Record<string, number> = {};
+    export let wipLimit: number = 0; // 0 means no limit
 
     const flipDurationMs = 200;
+
+    // Determine column accent color based on title
+    function getColumnAccent(title: string): string {
+        const t = title.toLowerCase();
+        // Done/Closed states - green
+        if (t === "done" || t === "closed") return "border-t-emerald-500";
+        // In Progress/Active states - amber
+        if (
+            t === "in progress" ||
+            t === "investigation" ||
+            t === "evaluation" ||
+            t === "execution"
+        )
+            return "border-t-amber-500";
+        // Review/Verification states - blue
+        if (
+            t === "review" ||
+            t === "verification" ||
+            t === "action plan" ||
+            t === "planning"
+        )
+            return "border-t-blue-500";
+        // Impact/Analysis states - purple
+        if (t === "impact analysis") return "border-t-purple-500";
+        // Default/Backlog states - slate
+        return "border-t-slate-300";
+    }
+
+    $: isAtCapacity = wipLimit > 0 && items.length >= wipLimit;
+    $: columnAccent = getColumnAccent(title);
 
     function handleDndConsider(e: CustomEvent<any>) {
         items = e.detail.items;
@@ -22,9 +53,9 @@
     }
 </script>
 
-<div class="flex flex-col h-full min-w-[300px] w-80 mx-2">
+<div class="flex flex-col h-full min-w-[260px] w-72 mx-1.5">
     <div
-        class="bg-white/60 backdrop-blur-md p-3 mb-3 rounded-xl border border-slate-200/60 shadow-sm flex justify-between items-center group hover:border-slate-300 transition-colors"
+        class="bg-white/60 backdrop-blur-md p-3 mb-3 rounded-xl border border-slate-200/60 border-t-4 {columnAccent} shadow-sm flex justify-between items-center group hover:border-slate-300 transition-colors"
     >
         <div class="flex items-center gap-2">
             <h2
@@ -33,9 +64,11 @@
                 {title}
             </h2>
             <div
-                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200"
+                class="px-2 py-0.5 rounded-full text-[10px] font-bold {isAtCapacity
+                    ? 'bg-orange-100 text-orange-700 border border-orange-300 animate-pulse'
+                    : 'bg-slate-100 text-slate-500 border border-slate-200'}"
             >
-                {items.length}
+                {items.length}{wipLimit > 0 ? `/${wipLimit}` : ""}
             </div>
         </div>
         <button

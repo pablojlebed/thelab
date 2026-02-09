@@ -1,5 +1,14 @@
 <script lang="ts">
-    import { Search, Filter, Mail, Phone, MapPin, Award } from "lucide-svelte";
+    import {
+        Search,
+        Filter,
+        Mail,
+        Phone,
+        MapPin,
+        Award,
+        FileText,
+    } from "lucide-svelte";
+    import { exportToCSV } from "../utils/export";
 
     type Scientist = {
         id: string;
@@ -7,6 +16,7 @@
         role: string;
         department: string;
         status: "active" | "away" | "busy" | "offline";
+        expectedReturn?: string; // For busy status
         email: string;
         location: string;
         tags: string[];
@@ -28,7 +38,7 @@
     const scientists: Scientist[] = [
         {
             id: "1",
-            name: "Marie Curie",
+            name: "Maria Skłodowska-Curie",
             role: "Head of Radioactivity Research",
             department: "Chemistry",
             status: "active",
@@ -44,6 +54,7 @@
             role: "Senior Theoretical Physicist",
             department: "Theoretical Physics",
             status: "busy",
+            expectedReturn: "2:30 PM",
             email: "a.einstein@lab.org",
             location: "Office 302",
             tags: ["Relativity", "Photoelectric Effect"],
@@ -104,6 +115,7 @@
             role: "Quantum Dynamicist",
             department: "Theoretical Physics",
             status: "busy",
+            expectedReturn: "4:00 PM",
             email: "r.feynman@lab.org",
             location: "Caltech Wing",
             tags: ["QED", "Path Integral", "Bongo Drums"],
@@ -223,6 +235,14 @@
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
                 />
             </div>
+            <button
+                on:click={() =>
+                    exportToCSV(filteredScientists, "personnel_list")}
+                class="px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors shadow-sm"
+                title="Export List"
+            >
+                <FileText size={18} />
+            </button>
         </div>
     </div>
 
@@ -232,7 +252,7 @@
     >
         {#each filteredScientists as scientist (scientist.id)}
             <div
-                class="card-pastel p-6 group hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+                class="card-pastel p-6 group hover:shadow-lg transition-all duration-300 relative overflow-hidden flex flex-col h-full"
             >
                 <!-- Status Indicator -->
                 <div class="absolute top-4 right-4 flex items-center gap-2">
@@ -244,6 +264,10 @@
                         class="w-2.5 h-2.5 rounded-full {getStatusColor(
                             scientist.status,
                         )} ring-2 ring-white"
+                        title={scientist.status === "busy" &&
+                        scientist.expectedReturn
+                            ? `Expected back: ${scientist.expectedReturn}`
+                            : ""}
                     ></span>
                 </div>
 
@@ -266,24 +290,27 @@
                 </div>
 
                 <!-- Tags -->
-                <div class="flex flex-wrap gap-2 justify-center mb-6">
+                <div class="flex flex-wrap gap-2 justify-center mb-6 flex-1">
                     {#each scientist.tags as tag}
                         <span
-                            class="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-medium rounded-full border border-slate-200"
+                            class="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-medium rounded-full border border-slate-200 h-fit"
                         >
                             {tag}
                         </span>
                     {/each}
                 </div>
 
-                <!-- Contact/Meta -->
-                <div class="space-y-3 pt-4 border-t border-slate-100">
+                <!-- Contact/Meta (pinned to bottom) -->
+                <div class="space-y-3 pt-4 border-t border-slate-100 mt-auto">
                     <div class="flex items-center text-sm text-slate-600">
-                        <Mail size={14} class="mr-3 text-slate-400" />
+                        <Mail size={14} class="mr-3 text-slate-400 shrink-0" />
                         <span class="truncate">{scientist.email}</span>
                     </div>
                     <div class="flex items-center text-sm text-slate-600">
-                        <MapPin size={14} class="mr-3 text-slate-400" />
+                        <MapPin
+                            size={14}
+                            class="mr-3 text-slate-400 shrink-0"
+                        />
                         <span>{scientist.location}</span>
                     </div>
                 </div>

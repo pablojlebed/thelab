@@ -28,7 +28,7 @@
 
     $: {
         // Define columns based on context
-        let colDefs = [];
+        let colDefs: { id: string; title: string }[] = [];
         if (context === "tasks") {
             colDefs = [
                 { id: "c1", title: "Backlog" },
@@ -355,13 +355,15 @@
                 />
             {/each}
 
-            <!-- Quick Add Column Button (Optional) -->
-            <button
-                class="min-w-[300px] w-80 mx-2 h-[60px] border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all"
-            >
-                <Plus size={20} class="mr-2" />
-                Add Column
-            </button>
+            <!-- Collapsed Add Column Button (Settings-like) -->
+            <div class="shrink-0 mx-1.5">
+                <button
+                    class="w-10 h-10 border border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-300 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all"
+                    title="Add Column"
+                >
+                    <Plus size={18} />
+                </button>
+            </div>
         </div>
     {/if}
 

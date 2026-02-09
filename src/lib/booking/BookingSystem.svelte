@@ -10,7 +10,10 @@
         X,
         Calendar,
         LayoutGrid,
+        List,
+        FileText,
     } from "lucide-svelte";
+    import { exportToCSV } from "../utils/export";
     import type { Instrument, Booking } from "./types";
     import { supabase } from "../supabase";
     import { onMount } from "svelte";
@@ -27,7 +30,7 @@
     let initialBookingDate: Date | null = null;
     let initialBookingTime: string | null = null;
     let initialBookingEndTime: string | null = null;
-    let viewMode: "grid" | "calendar" = "grid";
+    let viewMode: "grid" | "list" | "calendar" = "grid";
     let calendarInstrumentFilter = "";
 
     const categories = [
@@ -284,6 +287,17 @@
                     <span class="hidden md:inline">Grid</span>
                 </button>
                 <button
+                    on:click={() => (viewMode = "list")}
+                    class="p-1.5 md:px-3 md:py-1.5 text-sm font-medium rounded-md transition-colors flex items-center gap-1.5
+                    {viewMode === 'list'
+                        ? 'bg-white shadow-sm text-slate-800'
+                        : 'text-slate-500 hover:text-slate-700'}"
+                    title="List View"
+                >
+                    <List size={18} />
+                    <span class="hidden md:inline">List</span>
+                </button>
+                <button
                     on:click={() => (viewMode = "calendar")}
                     class="p-1.5 md:px-3 md:py-1.5 text-sm font-medium rounded-md transition-colors flex items-center gap-1.5
                     {viewMode === 'calendar'
@@ -337,11 +351,19 @@
             </select>
 
             <button
+                on:click={() => exportToCSV(instruments, "instruments_list")}
+                class="flex items-center gap-2 bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition-all font-medium text-sm shadow-sm whitespace-nowrap"
+            >
+                <FileText size={16} />
+                Export
+            </button>
+
+            <button
                 on:click={openNewBooking}
                 class="flex items-center gap-2 bg-indigo-600 text-white border border-indigo-700 px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all font-medium text-sm shadow-sm whitespace-nowrap"
             >
                 <Plus size={16} />
-                New Booking
+                Register Instrument
             </button>
         </div>
     </div>
@@ -360,6 +382,125 @@
                         on:select={handleSelectInstrument}
                     />
                 {/each}
+            </div>
+
+            {#if filteredInstruments.length === 0}
+                <div class="text-center py-12">
+                    <Microscope size={48} class="mx-auto text-slate-300 mb-4" />
+                    <p class="text-slate-500">No instruments found</p>
+                </div>
+            {/if}
+        {:else if viewMode === "list"}
+            <!-- Instruments List/Table View -->
+            <div
+                class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm"
+            >
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th
+                                class="text-left py-3 px-4 font-semibold text-slate-600"
+                                >Instrument</th
+                            >
+                            <th
+                                class="text-left py-3 px-4 font-semibold text-slate-600 hidden md:table-cell"
+                                >Category</th
+                            >
+                            <th
+                                class="text-left py-3 px-4 font-semibold text-slate-600"
+                                >Status</th
+                            >
+                            <th
+                                class="text-left py-3 px-4 font-semibold text-slate-600 hidden lg:table-cell"
+                                >Description</th
+                            >
+                            <th
+                                class="text-right py-3 px-4 font-semibold text-slate-600"
+                                >Action</th
+                            >
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {#each filteredInstruments as instrument (instrument.id)}
+                            <tr
+                                class="hover:bg-slate-50 transition-colors cursor-pointer"
+                                on:click={() => {
+                                    calendarInstrumentFilter = instrument.id;
+                                    viewMode = "calendar";
+                                }}
+                                on:keydown={(e) =>
+                                    e.key === "Enter" &&
+                                    (() => {
+                                        calendarInstrumentFilter =
+                                            instrument.id;
+                                        viewMode = "calendar";
+                                    })()}
+                            >
+                                <td class="py-3 px-4">
+                                    <span class="font-medium text-slate-800"
+                                        >{instrument.name}</span
+                                    >
+                                </td>
+                                <td class="py-3 px-4 hidden md:table-cell">
+                                    <span
+                                        class="px-2 py-0.5 text-xs font-medium rounded border
+                                        {instrument.category === 'Spectroscopy'
+                                            ? 'bg-cat-spectro border-cat-spectro-border text-cat-spectro-text'
+                                            : instrument.category ===
+                                                'Chromatography'
+                                              ? 'bg-cat-chroma border-cat-chroma-border text-cat-chroma-text'
+                                              : instrument.category ===
+                                                  'Elemental'
+                                                ? 'bg-cat-elemental border-cat-elemental-border text-cat-elemental-text'
+                                                : 'bg-cat-general border-cat-general-border text-cat-general-text'}"
+                                    >
+                                        {instrument.category}
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span
+                                        class="px-2 py-0.5 text-xs font-bold uppercase rounded border
+                                        {instrument.status === 'available'
+                                            ? 'status-available'
+                                            : instrument.status === 'booked'
+                                              ? 'status-booked'
+                                              : 'status-maintenance'}"
+                                    >
+                                        {instrument.status === "available"
+                                            ? "Available"
+                                            : instrument.status === "booked"
+                                              ? "In Use"
+                                              : "Maintenance"}
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4 hidden lg:table-cell">
+                                    <span
+                                        class="text-slate-500 truncate block max-w-xs"
+                                        >{instrument.description}</span
+                                    >
+                                </td>
+                                <td class="py-3 px-4 text-right">
+                                    {#if instrument.status === "available"}
+                                        <button
+                                            on:click|stopPropagation={() => {
+                                                selectedInstrument = instrument;
+                                                editingBooking = null;
+                                                showBookingModal = true;
+                                            }}
+                                            class="px-3 py-1 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition-all"
+                                        >
+                                            Book
+                                        </button>
+                                    {:else}
+                                        <span class="text-xs text-slate-400"
+                                            >—</span
+                                        >
+                                    {/if}
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
             </div>
 
             {#if filteredInstruments.length === 0}

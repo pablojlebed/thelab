@@ -41,7 +41,7 @@
         <button
             class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all {activeContext ===
             ctx.id
-                ? 'bg-white text-slate-800 shadow-sm ring-1 ring-slate-200'
+                ? 'bg-indigo-100 text-indigo-800 shadow-sm ring-2 ring-indigo-300 font-semibold'
                 : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}"
             on:click={() => selectContext(ctx.id)}
         >
