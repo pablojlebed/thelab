@@ -137,7 +137,7 @@
 
     function getStatusStyle(status: Incident["status"]) {
         switch (status) {
-            case "resolved":
+            case "closed":
                 return "text-emerald-600";
             case "investigating":
                 return "text-amber-600";
@@ -153,10 +153,13 @@
         return "fill-red-100 stroke-red-400";
     }
 
-    let selectedReportType: "near-miss" | "minor" | "major" = "near-miss";
+    let selectedReportType: "near-miss" | "minor" | "major" | "critical" =
+        "near-miss";
     let isReportModalOpen = false;
 
-    function openReportModal(type: "near-miss" | "minor" | "major") {
+    function openReportModal(
+        type: "near-miss" | "minor" | "major" | "critical",
+    ) {
         selectedReportType = type;
         isReportModalOpen = true;
     }

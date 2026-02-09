@@ -10,7 +10,7 @@
     import { fly, fade } from "svelte/transition";
 
     export let isOpen = false;
-    export let type: "near-miss" | "minor" | "major" = "near-miss";
+    export let type: "near-miss" | "minor" | "major" | "critical" = "near-miss";
 
     const dispatch = createEventDispatcher();
 
@@ -70,6 +70,12 @@
             icon: XCircle,
             title: "Report Major Emergency",
             desc: "A critical situation requiring immediate attention and evacuation.",
+        },
+        critical: {
+            color: "red",
+            icon: XCircle,
+            title: "Report Critical Incident",
+            desc: "A life-threatening situation requiring immediate emergency response.",
         },
     }[type];
 </script>
