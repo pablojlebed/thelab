@@ -209,35 +209,41 @@
 <div class="card-pastel overflow-hidden">
     <!-- Header -->
     <div
-        class="p-4 border-b border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0"
+        class="p-4 border-b border-slate-200 dark:border-slate-700 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0"
     >
         <div class="flex items-center gap-2">
             <button
                 on:click={prevWeek}
-                class="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
             >
-                <ChevronLeft size={20} class="text-slate-600" />
+                <ChevronLeft
+                    size={20}
+                    class="text-slate-600 dark:text-slate-400"
+                />
             </button>
             <button
                 on:click={nextWeek}
-                class="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
             >
-                <ChevronRight size={20} class="text-slate-600" />
+                <ChevronRight
+                    size={20}
+                    class="text-slate-600 dark:text-slate-400"
+                />
             </button>
             <button
                 on:click={goToToday}
-                class="px-3 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                class="px-3 py-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
             >
                 Today
             </button>
         </div>
-        <h3 class="text-lg font-semibold text-slate-800">
+        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">
             {formatMonthYear(currentWeekStart)}
         </h3>
         <div class="flex items-center gap-2">
             <select
                 bind:value={selectedInstrumentId}
-                class="bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 py-1.5 px-3 focus:outline-none focus:border-indigo-500"
+                class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-800 dark:text-slate-200 py-1.5 px-3 focus:outline-none focus:border-indigo-500"
             >
                 <option value="">All Instruments</option>
                 {#each instruments as inst}
@@ -254,19 +260,20 @@
         <div class="min-w-[50rem]">
             <!-- Day Headers -->
             <div
-                class="grid grid-cols-[3.75rem_repeat(7,1fr)] border-b border-slate-200 sticky top-0 z-20 bg-white shadow-sm"
+                class="grid grid-cols-[3.75rem_repeat(7,1fr)] border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20 bg-white dark:bg-slate-800 shadow-sm"
             >
                 <div
-                    class="p-2 text-center text-xs font-medium text-slate-400 flex items-center justify-center sticky left-0 z-30 bg-white border-r border-slate-100"
+                    class="p-2 text-center text-xs font-medium text-slate-400 flex items-center justify-center sticky left-0 z-30 bg-white dark:bg-slate-800 border-r border-slate-100 dark:border-slate-700"
                 >
                     <Clock size={14} />
                 </div>
                 {#each weekDays as day}
                     <div
-                        class="p-2 text-center text-sm font-medium border-l border-slate-100"
-                        class:bg-indigo-50={isToday(day)}
-                        class:text-indigo-600={isToday(day)}
-                        class:text-slate-600={!isToday(day)}
+                        class="p-2 text-center text-sm font-medium border-l border-slate-100 dark:border-slate-700 {isToday(
+                            day,
+                        )
+                            ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
+                            : 'text-slate-600 dark:text-slate-300'}"
                     >
                         {formatDayHeader(day)}
                     </div>
@@ -279,7 +286,7 @@
                     class="grid grid-cols-[3.75rem_repeat(7,1fr)] last:border-b-0"
                 >
                     <div
-                        class="p-2 text-center text-xs text-slate-400 font-medium flex items-center justify-center sticky left-0 z-10 bg-white border-r border-b border-slate-100"
+                        class="p-2 text-center text-xs text-slate-400 font-medium flex items-center justify-center sticky left-0 z-10 bg-white dark:bg-slate-800 border-r border-b border-slate-100 dark:border-slate-700"
                     >
                         {hour.toString().padStart(2, "0")}:00
                     </div>
@@ -313,18 +320,18 @@
                             }}
                             role="button"
                             tabindex="0"
-                            class="min-h-[3rem] border-l border-b border-slate-100 p-1 transition-colors text-left relative select-none
+                            class="min-h-[3rem] border-l border-b border-slate-100 dark:border-slate-700 p-1 transition-colors text-left relative select-none
                 {isContinued || isSelectionContinued(day, hour)
                                 ? 'border-b-transparent'
-                                : 'border-b-slate-100'}
+                                : 'border-b-slate-100 dark:border-b-slate-700'}
                 {booking
                                 ? 'bg-booked/50 hover:bg-booked cursor-pointer'
                                 : isSelected(day, hour)
-                                  ? 'bg-green-100 ring-2 ring-green-400 z-10'
+                                  ? 'bg-green-100 dark:bg-green-900/50 ring-2 ring-green-400 z-10'
                                   : past
-                                    ? 'bg-slate-50 cursor-not-allowed'
+                                    ? 'bg-slate-50 dark:bg-slate-900/50 cursor-not-allowed'
                                     : 'hover:bg-available/50 cursor-pointer'}
-                {isToday(day) ? 'bg-indigo-50/30' : ''}"
+                {isToday(day) ? 'bg-indigo-50/30 dark:bg-indigo-900/20' : ''}"
                         >
                             {#if booking && shouldShowBookingInfo(day, hour, booking)}
                                 <div
@@ -332,7 +339,9 @@
                                 >
                                     {getInstrumentName(booking.instrument_id)}
                                 </div>
-                                <div class="text-xs text-slate-500 truncate">
+                                <div
+                                    class="text-xs text-slate-500 dark:text-slate-400 truncate"
+                                >
                                     {booking.user_name}
                                 </div>
                             {/if}
@@ -344,24 +353,26 @@
     </div>
 
     <!-- Legend -->
-    <div class="p-3 border-t border-slate-200 flex items-center gap-4 text-xs">
+    <div
+        class="p-3 border-t border-slate-200 dark:border-slate-700 flex items-center gap-4 text-xs"
+    >
         <div class="flex items-center gap-1.5">
             <div
                 class="w-3 h-3 rounded bg-available border border-available-border"
             ></div>
-            <span class="text-slate-500">Available</span>
+            <span class="text-slate-500 dark:text-slate-400">Available</span>
         </div>
         <div class="flex items-center gap-1.5">
             <div
                 class="w-3 h-3 rounded bg-booked border border-booked-border"
             ></div>
-            <span class="text-slate-500">Booked</span>
+            <span class="text-slate-500 dark:text-slate-400">Booked</span>
         </div>
         <div class="flex items-center gap-1.5">
             <div
-                class="w-3 h-3 rounded bg-slate-100 border border-slate-200"
+                class="w-3 h-3 rounded bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600"
             ></div>
-            <span class="text-slate-500">Past</span>
+            <span class="text-slate-500 dark:text-slate-400">Past</span>
         </div>
     </div>
 </div>

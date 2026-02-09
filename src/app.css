@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Base palette - matches kanban */
   --color-pastel-bg: #F8FAFC;
@@ -75,28 +78,28 @@
   }
 
   body {
-    @apply bg-pastel-bg text-slate-800 font-sans antialiased overflow-x-hidden;
+    @apply bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans antialiased overflow-x-hidden transition-colors duration-300;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply backdrop-blur-md bg-white/70 border border-white/40 shadow-sm;
+    @apply backdrop-blur-md bg-white/70 dark:bg-slate-800/70 border border-white/40 dark:border-slate-700/40 shadow-sm;
   }
 
   .card-pastel {
-    @apply bg-white border border-slate-200 shadow-sm rounded-xl transition-all duration-200;
+    @apply bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm rounded-xl transition-all duration-200;
   }
 
   .status-available {
-    @apply bg-available border-available-border text-available-text;
+    @apply bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400;
   }
 
   .status-booked {
-    @apply bg-booked border-booked-border text-booked-text;
+    @apply bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400;
   }
 
   .status-maintenance {
-    @apply bg-maintenance border-maintenance-border text-maintenance-text;
+    @apply bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400;
   }
 }

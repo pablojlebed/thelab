@@ -126,31 +126,33 @@
     function getSeverityStyle(severity: Incident["severity"]) {
         switch (severity) {
             case "near-miss":
-                return "bg-blue-100 text-blue-700 border-blue-200";
+                return "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700";
             case "minor":
-                return "bg-amber-100 text-amber-700 border-amber-200";
+                return "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-700";
             case "major":
             case "critical":
-                return "bg-red-100 text-red-700 border-red-200";
+                return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700";
         }
     }
 
     function getStatusStyle(status: Incident["status"]) {
         switch (status) {
             case "closed":
-                return "text-emerald-600";
+                return "text-emerald-600 dark:text-emerald-400";
             case "investigating":
-                return "text-amber-600";
+                return "text-amber-600 dark:text-amber-400";
             case "open":
             case "draft":
-                return "text-red-600";
+                return "text-red-600 dark:text-red-400";
         }
     }
 
     function getZoneColor(alertLevel: number) {
-        if (alertLevel === 0) return "fill-emerald-100 stroke-emerald-300";
-        if (alertLevel === 1) return "fill-amber-100 stroke-amber-400";
-        return "fill-red-100 stroke-red-400";
+        if (alertLevel === 0)
+            return "fill-emerald-100 dark:fill-emerald-900/50 stroke-emerald-300 dark:stroke-emerald-600";
+        if (alertLevel === 1)
+            return "fill-amber-100 dark:fill-amber-900/50 stroke-amber-400 dark:stroke-amber-600";
+        return "fill-red-100 dark:fill-red-900/50 stroke-red-400 dark:stroke-red-600";
     }
 
     let selectedReportType: "near-miss" | "minor" | "major" | "critical" =
@@ -164,9 +166,7 @@
         isReportModalOpen = true;
     }
 
-    function handleReportSubmit(event: CustomEvent<Incident>) {
-        const incident = event.detail;
-
+    function handleReportSubmit(incident: Incident) {
         // Automatic NC generation for Major, Critical, or certain High-Risk Near Misses
         if (incident.severity === "major" || incident.severity === "critical") {
             qualityStore.addNC({
@@ -206,8 +206,8 @@
 <ReportModal
     isOpen={isReportModalOpen}
     type={selectedReportType}
-    on:close={() => (isReportModalOpen = false)}
-    on:submit={handleReportSubmit}
+    onclose={() => (isReportModalOpen = false)}
+    onsubmit={handleReportSubmit}
 />
 
 <div class="space-y-6">
@@ -215,14 +215,14 @@
     <div class="flex justify-end gap-3">
         <button
             onclick={() => exportToCSV(recentIncidents, "safety_incidents")}
-            class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2"
+            class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2"
         >
             <FileText size={16} />
             Export Data
         </button>
         <button
             onclick={() => openReportModal("near-miss")}
-            class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 transition-all"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 dark:shadow-indigo-900/50 transition-all"
         >
             New Entry
         </button>
@@ -232,48 +232,70 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="card-pastel p-5 flex items-center gap-4">
             <div
-                class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center"
+                class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center"
             >
-                <ShieldAlert class="w-6 h-6 text-emerald-600" />
+                <ShieldAlert
+                    class="w-6 h-6 text-emerald-600 dark:text-emerald-400"
+                />
             </div>
             <div>
-                <p class="text-sm text-slate-500">Safety Status</p>
-                <p class="text-xl font-bold text-emerald-600">All Clear</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    Safety Status
+                </p>
+                <p
+                    class="text-xl font-bold text-emerald-600 dark:text-emerald-400"
+                >
+                    All Clear
+                </p>
             </div>
         </div>
         <div class="card-pastel p-5 flex items-center gap-4">
             <div
-                class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center"
+                class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center"
             >
-                <TrendingDown class="w-6 h-6 text-blue-600" />
+                <TrendingDown
+                    class="w-6 h-6 text-blue-600 dark:text-blue-400"
+                />
             </div>
             <div>
-                <p class="text-sm text-slate-500">Days Since Incident</p>
-                <p class="text-xl font-bold text-slate-800">42</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    Days Since Incident
+                </p>
+                <p class="text-xl font-bold text-slate-800 dark:text-slate-100">
+                    42
+                </p>
             </div>
         </div>
         <div class="card-pastel p-5 flex items-center gap-4">
             <div
-                class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center"
+                class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center"
             >
-                <AlertTriangle class="w-6 h-6 text-amber-600" />
+                <AlertTriangle
+                    class="w-6 h-6 text-amber-600 dark:text-amber-400"
+                />
             </div>
             <div>
-                <p class="text-sm text-slate-500">Open Reports</p>
-                <p class="text-xl font-bold text-slate-800">
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    Open Reports
+                </p>
+                <p class="text-xl font-bold text-slate-800 dark:text-slate-100">
                     {$safetyStore.filter((i) => i.status === "open").length}
                 </p>
             </div>
         </div>
         <div class="card-pastel p-5 flex items-center gap-4">
             <div
-                class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center"
+                class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center"
             >
-                <Calendar class="w-6 h-6 text-indigo-600" />
+                <Calendar
+                    class="w-6 h-6 text-indigo-600 dark:text-indigo-400"
+                />
             </div>
             <div>
-                <p class="text-sm text-slate-500">Next Audit</p>
-                <p class="text-xl font-bold text-slate-800">
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    Next Audit
+                </p>
+                <p class="text-xl font-bold text-slate-800 dark:text-slate-100">
                     {getDaysUntil(complianceItems[0].dueDate)} days
                 </p>
             </div>
@@ -287,59 +309,75 @@
             <!-- Tiered Reporting -->
             <div class="card-pastel p-6">
                 <h3
-                    class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4"
+                    class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-4"
                 >
                     Report an Incident
                 </h3>
                 <div class="space-y-3">
                     <button
                         onclick={() => openReportModal("near-miss")}
-                        class="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-300 transition-all group"
+                        class="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:border-blue-300 dark:hover:border-blue-600 transition-all group"
                     >
                         <div
-                            class="w-10 h-10 rounded-lg bg-blue-200 flex items-center justify-center group-hover:scale-110 transition-transform"
+                            class="w-10 h-10 rounded-lg bg-blue-200 dark:bg-blue-800 flex items-center justify-center group-hover:scale-110 transition-transform"
                         >
-                            <AlertCircle class="w-5 h-5 text-blue-700" />
+                            <AlertCircle
+                                class="w-5 h-5 text-blue-700 dark:text-blue-300"
+                            />
                         </div>
                         <div class="text-left">
-                            <p class="font-semibold text-blue-800">Near Miss</p>
-                            <p class="text-xs text-blue-600">
+                            <p
+                                class="font-semibold text-blue-800 dark:text-blue-200"
+                            >
+                                Near Miss
+                            </p>
+                            <p class="text-xs text-blue-600 dark:text-blue-400">
                                 Close call, no harm occurred
                             </p>
                         </div>
                     </button>
                     <button
                         onclick={() => openReportModal("minor")}
-                        class="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 hover:border-amber-300 transition-all group"
+                        class="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/30 hover:bg-amber-100 dark:hover:bg-amber-900/50 hover:border-amber-300 dark:hover:border-amber-600 transition-all group"
                     >
                         <div
-                            class="w-10 h-10 rounded-lg bg-amber-200 flex items-center justify-center group-hover:scale-110 transition-transform"
+                            class="w-10 h-10 rounded-lg bg-amber-200 dark:bg-amber-800 flex items-center justify-center group-hover:scale-110 transition-transform"
                         >
-                            <AlertTriangle class="w-5 h-5 text-amber-700" />
+                            <AlertTriangle
+                                class="w-5 h-5 text-amber-700 dark:text-amber-300"
+                            />
                         </div>
                         <div class="text-left">
-                            <p class="font-semibold text-amber-800">
+                            <p
+                                class="font-semibold text-amber-800 dark:text-amber-200"
+                            >
                                 Minor Incident
                             </p>
-                            <p class="text-xs text-amber-600">
+                            <p
+                                class="text-xs text-amber-600 dark:text-amber-400"
+                            >
                                 Small spill, minor injury
                             </p>
                         </div>
                     </button>
                     <button
                         onclick={() => openReportModal("major")}
-                        class="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-red-200 bg-red-50 hover:bg-red-100 hover:border-red-300 transition-all group"
+                        class="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 hover:border-red-300 dark:hover:border-red-600 transition-all group"
                     >
                         <div
-                            class="w-10 h-10 rounded-lg bg-red-200 flex items-center justify-center group-hover:scale-110 transition-transform"
+                            class="w-10 h-10 rounded-lg bg-red-200 dark:bg-red-800 flex items-center justify-center group-hover:scale-110 transition-transform"
                         >
-                            <XCircle class="w-5 h-5 text-red-700" />
+                            <XCircle
+                                class="w-5 h-5 text-red-700 dark:text-red-300"
+                            />
                         </div>
                         <div class="text-left">
-                            <p class="font-semibold text-red-800">
+                            <p
+                                class="font-semibold text-red-800 dark:text-red-200"
+                            >
                                 Major Emergency
                             </p>
-                            <p class="text-xs text-red-600">
+                            <p class="text-xs text-red-600 dark:text-red-400">
                                 Serious incident, evacuation
                             </p>
                         </div>
@@ -350,7 +388,7 @@
             <!-- Compliance Countdown -->
             <div class="card-pastel p-6">
                 <h3
-                    class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4"
+                    class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-4"
                 >
                     Compliance Countdown
                 </h3>
@@ -358,27 +396,29 @@
                     {#each complianceItems as item}
                         {@const daysLeft = getDaysUntil(item.dueDate)}
                         <div
-                            class="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100"
+                            class="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-600"
                         >
                             <div
                                 class="w-10 h-10 rounded-lg {daysLeft <= 14
-                                    ? 'bg-amber-100'
-                                    : 'bg-slate-100'} flex items-center justify-center"
+                                    ? 'bg-amber-100 dark:bg-amber-900/50'
+                                    : 'bg-slate-100 dark:bg-slate-600'} flex items-center justify-center"
                             >
                                 <svelte:component
                                     this={item.icon}
                                     class="w-5 h-5 {daysLeft <= 14
-                                        ? 'text-amber-600'
-                                        : 'text-slate-500'}"
+                                        ? 'text-amber-600 dark:text-amber-400'
+                                        : 'text-slate-500 dark:text-slate-400'}"
                                 />
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p
-                                    class="font-medium text-slate-700 text-sm truncate"
+                                    class="font-medium text-slate-700 dark:text-slate-200 text-sm truncate"
                                 >
                                     {item.title}
                                 </p>
-                                <p class="text-xs text-slate-500">
+                                <p
+                                    class="text-xs text-slate-500 dark:text-slate-400"
+                                >
                                     {item.dueDate.toLocaleDateString("en-US", {
                                         month: "short",
                                         day: "numeric",
@@ -389,12 +429,14 @@
                             <div class="text-right">
                                 <span
                                     class="text-lg font-bold {daysLeft <= 14
-                                        ? 'text-amber-600'
-                                        : 'text-slate-700'}"
+                                        ? 'text-amber-600 dark:text-amber-400'
+                                        : 'text-slate-700 dark:text-slate-200'}"
                                 >
                                     {daysLeft}
                                 </span>
-                                <p class="text-[10px] text-slate-400 uppercase">
+                                <p
+                                    class="text-[10px] text-slate-400 dark:text-slate-500 uppercase"
+                                >
                                     days
                                 </p>
                             </div>
@@ -407,11 +449,13 @@
         <!-- Center Column: Lab Heatmap -->
         <div class="card-pastel p-6">
             <h3
-                class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4"
+                class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-4"
             >
                 Lab Safety Heatmap
             </h3>
-            <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+            <div
+                class="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-100 dark:border-slate-600"
+            >
                 <svg viewBox="0 0 400 200" class="w-full h-auto">
                     <!-- Grid background -->
                     <defs>
@@ -457,7 +501,7 @@
                                 y={zone.y + zone.h / 2}
                                 text-anchor="middle"
                                 dominant-baseline="middle"
-                                class="fill-slate-600 text-[10px] font-medium pointer-events-none"
+                                class="fill-slate-600 dark:fill-slate-300 text-[10px] font-medium pointer-events-none"
                             >
                                 {zone.name}
                             </text>
@@ -468,21 +512,26 @@
             <div class="mt-4 flex items-center justify-center gap-6 text-xs">
                 <div class="flex items-center gap-2">
                     <span
-                        class="w-3 h-3 rounded bg-emerald-200 border border-emerald-300"
+                        class="w-3 h-3 rounded bg-emerald-200 dark:bg-emerald-800 border border-emerald-300 dark:border-emerald-600"
                     ></span>
-                    <span class="text-slate-500">Normal</span>
+                    <span class="text-slate-500 dark:text-slate-400"
+                        >Normal</span
+                    >
                 </div>
                 <div class="flex items-center gap-2">
                     <span
-                        class="w-3 h-3 rounded bg-amber-200 border border-amber-400"
+                        class="w-3 h-3 rounded bg-amber-200 dark:bg-amber-800 border border-amber-400 dark:border-amber-600"
                     ></span>
-                    <span class="text-slate-500">Caution</span>
+                    <span class="text-slate-500 dark:text-slate-400"
+                        >Caution</span
+                    >
                 </div>
                 <div class="flex items-center gap-2">
                     <span
-                        class="w-3 h-3 rounded bg-red-200 border border-red-400"
+                        class="w-3 h-3 rounded bg-red-200 dark:bg-red-800 border border-red-400 dark:border-red-600"
                     ></span>
-                    <span class="text-slate-500">Alert</span>
+                    <span class="text-slate-500 dark:text-slate-400">Alert</span
+                    >
                 </div>
             </div>
         </div>
@@ -491,12 +540,12 @@
         <div class="card-pastel p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3
-                    class="text-sm font-semibold text-slate-700 uppercase tracking-wider"
+                    class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider"
                 >
                     Recent Incidents
                 </h3>
                 <button
-                    class="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
+                    class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium flex items-center gap-1"
                 >
                     <FileText class="w-3.5 h-3.5" />
                     View All
@@ -506,33 +555,35 @@
             {#if draftIncidents.length > 0}
                 <div class="mb-4 space-y-3">
                     <h4
-                        class="text-xs font-bold text-slate-500 uppercase tracking-wider"
+                        class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                     >
                         Drafts ({draftIncidents.length})
                     </h4>
                     {#each draftIncidents as draft}
                         <div
-                            class="p-3 rounded-lg border-2 border-dashed border-indigo-200 bg-indigo-50/50"
+                            class="p-3 rounded-lg border-2 border-dashed border-indigo-200 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-900/20"
                         >
                             <div class="flex justify-between items-start">
                                 <div>
                                     <span
-                                        class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-200 text-slate-600 mb-1"
+                                        class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 mb-1"
                                     >
                                         Draft
                                     </span>
                                     <p
-                                        class="text-sm font-medium text-slate-800"
+                                        class="text-sm font-medium text-slate-800 dark:text-slate-200"
                                     >
                                         {draft.title}
                                     </p>
-                                    <p class="text-xs text-slate-500 mt-1">
+                                    <p
+                                        class="text-xs text-slate-500 dark:text-slate-400 mt-1"
+                                    >
                                         {draft.description}
                                     </p>
                                 </div>
                                 <button
                                     onclick={() => handleDraftSubmit(draft)}
-                                    class="px-3 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 shadow-sm shadow-indigo-200 transition-all"
+                                    class="px-3 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 shadow-sm shadow-indigo-200 dark:shadow-indigo-900/50 transition-all"
                                 >
                                     Review & Submit
                                 </button>
@@ -545,12 +596,13 @@
             <div class="space-y-3">
                 {#each recentIncidents as incident}
                     <div
-                        class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors"
+                        class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-600 hover:border-slate-200 dark:hover:border-slate-500 transition-colors"
                     >
                         <div
                             class="flex items-start justify-between gap-2 mb-2"
                         >
-                            <span class="text-xs font-mono text-slate-400"
+                            <span
+                                class="text-xs font-mono text-slate-400 dark:text-slate-500"
                                 >{incident.id}</span
                             >
                             <span
@@ -561,11 +613,13 @@
                                 {incident.severity.replace("-", " ")}
                             </span>
                         </div>
-                        <p class="text-sm font-medium text-slate-700 mb-2">
+                        <p
+                            class="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2"
+                        >
                             {incident.title}
                         </p>
                         <div
-                            class="flex items-center gap-3 text-xs text-slate-500"
+                            class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400"
                         >
                             <span class="flex items-center gap-1">
                                 <MapPin class="w-3 h-3" />

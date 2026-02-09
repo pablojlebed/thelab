@@ -270,17 +270,17 @@
 <div class="flex flex-col h-full space-y-4">
     <!-- Toolbar -->
     <div
-        class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
+        class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm"
     >
         <div class="flex items-center gap-4 w-full md:w-auto">
             <!-- View Toggle -->
-            <div class="flex bg-slate-100 p-1 rounded-lg">
+            <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-lg">
                 <button
                     on:click={() => (viewMode = "grid")}
                     class="p-1.5 md:px-3 md:py-1.5 text-sm font-medium rounded-md transition-colors flex items-center gap-1.5
                     {viewMode === 'grid'
-                        ? 'bg-white shadow-sm text-slate-800'
-                        : 'text-slate-500 hover:text-slate-700'}"
+                        ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
                     title="Grid View"
                 >
                     <LayoutGrid size={18} />
@@ -290,8 +290,8 @@
                     on:click={() => (viewMode = "list")}
                     class="p-1.5 md:px-3 md:py-1.5 text-sm font-medium rounded-md transition-colors flex items-center gap-1.5
                     {viewMode === 'list'
-                        ? 'bg-white shadow-sm text-slate-800'
-                        : 'text-slate-500 hover:text-slate-700'}"
+                        ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
                     title="List View"
                 >
                     <List size={18} />
@@ -301,8 +301,8 @@
                     on:click={() => (viewMode = "calendar")}
                     class="p-1.5 md:px-3 md:py-1.5 text-sm font-medium rounded-md transition-colors flex items-center gap-1.5
                     {viewMode === 'calendar'
-                        ? 'bg-white shadow-sm text-slate-800'
-                        : 'text-slate-500 hover:text-slate-700'}"
+                        ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
                     title="Calendar View"
                 >
                     <Calendar size={18} />
@@ -319,7 +319,7 @@
                 <input
                     bind:value={searchQuery}
                     placeholder="Search..."
-                    class="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 w-48 transition-all"
+                    class="pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 w-48 transition-all"
                 />
             </div>
         </div>
@@ -330,7 +330,7 @@
             <!-- Filters -->
             <select
                 bind:value={selectedCategory}
-                class="bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 py-2 px-3 transition-all cursor-pointer"
+                class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 py-2 px-3 transition-all cursor-pointer"
             >
                 <option value="">All Categories</option>
                 {#each categories as cat}
@@ -340,7 +340,7 @@
 
             <select
                 bind:value={selectedStatus}
-                class="bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 py-2 px-3 transition-all cursor-pointer"
+                class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 py-2 px-3 transition-all cursor-pointer"
             >
                 <option value="">All Status</option>
                 {#each statuses as s}
@@ -352,7 +352,7 @@
 
             <button
                 on:click={() => exportToCSV(instruments, "instruments_list")}
-                class="flex items-center gap-2 bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 transition-all font-medium text-sm shadow-sm whitespace-nowrap"
+                class="flex items-center gap-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 px-4 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-all font-medium text-sm shadow-sm whitespace-nowrap"
             >
                 <FileText size={16} />
                 Export
@@ -386,44 +386,53 @@
 
             {#if filteredInstruments.length === 0}
                 <div class="text-center py-12">
-                    <Microscope size={48} class="mx-auto text-slate-300 mb-4" />
-                    <p class="text-slate-500">No instruments found</p>
+                    <Microscope
+                        size={48}
+                        class="mx-auto text-slate-300 dark:text-slate-600 mb-4"
+                    />
+                    <p class="text-slate-500 dark:text-slate-400">
+                        No instruments found
+                    </p>
                 </div>
             {/if}
         {:else if viewMode === "list"}
             <!-- Instruments List/Table View -->
             <div
-                class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm"
+                class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm"
             >
                 <table class="w-full text-sm">
-                    <thead class="bg-slate-50 border-b border-slate-200">
+                    <thead
+                        class="bg-slate-50 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600"
+                    >
                         <tr>
                             <th
-                                class="text-left py-3 px-4 font-semibold text-slate-600"
+                                class="text-left py-3 px-4 font-semibold text-slate-600 dark:text-slate-300"
                                 >Instrument</th
                             >
                             <th
-                                class="text-left py-3 px-4 font-semibold text-slate-600 hidden md:table-cell"
+                                class="text-left py-3 px-4 font-semibold text-slate-600 dark:text-slate-300 hidden md:table-cell"
                                 >Category</th
                             >
                             <th
-                                class="text-left py-3 px-4 font-semibold text-slate-600"
+                                class="text-left py-3 px-4 font-semibold text-slate-600 dark:text-slate-300"
                                 >Status</th
                             >
                             <th
-                                class="text-left py-3 px-4 font-semibold text-slate-600 hidden lg:table-cell"
+                                class="text-left py-3 px-4 font-semibold text-slate-600 dark:text-slate-300 hidden lg:table-cell"
                                 >Description</th
                             >
                             <th
-                                class="text-right py-3 px-4 font-semibold text-slate-600"
+                                class="text-right py-3 px-4 font-semibold text-slate-600 dark:text-slate-300"
                                 >Action</th
                             >
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody
+                        class="divide-y divide-slate-100 dark:divide-slate-700"
+                    >
                         {#each filteredInstruments as instrument (instrument.id)}
                             <tr
-                                class="hover:bg-slate-50 transition-colors cursor-pointer"
+                                class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
                                 on:click={() => {
                                     calendarInstrumentFilter = instrument.id;
                                     viewMode = "calendar";
@@ -437,7 +446,8 @@
                                     })()}
                             >
                                 <td class="py-3 px-4">
-                                    <span class="font-medium text-slate-800"
+                                    <span
+                                        class="font-medium text-slate-800 dark:text-slate-200"
                                         >{instrument.name}</span
                                     >
                                 </td>
@@ -475,7 +485,7 @@
                                 </td>
                                 <td class="py-3 px-4 hidden lg:table-cell">
                                     <span
-                                        class="text-slate-500 truncate block max-w-xs"
+                                        class="text-slate-500 dark:text-slate-400 truncate block max-w-xs"
                                         >{instrument.description}</span
                                     >
                                 </td>
@@ -505,8 +515,13 @@
 
             {#if filteredInstruments.length === 0}
                 <div class="text-center py-12">
-                    <Microscope size={48} class="mx-auto text-slate-300 mb-4" />
-                    <p class="text-slate-500">No instruments found</p>
+                    <Microscope
+                        size={48}
+                        class="mx-auto text-slate-300 dark:text-slate-600 mb-4"
+                    />
+                    <p class="text-slate-500 dark:text-slate-400">
+                        No instruments found
+                    </p>
                 </div>
             {/if}
         {:else}

@@ -38,7 +38,7 @@
         // Impact/Analysis states - purple
         if (t === "impact analysis") return "border-t-purple-500";
         // Default/Backlog states - slate
-        return "border-t-slate-300";
+        return "border-t-slate-300 dark:border-t-slate-600";
     }
 
     $: isAtCapacity = wipLimit > 0 && items.length >= wipLimit;
@@ -55,31 +55,31 @@
 
 <div class="flex flex-col h-full min-w-[260px] w-72 mx-1.5">
     <div
-        class="bg-white/60 backdrop-blur-md p-3 mb-3 rounded-xl border border-slate-200/60 border-t-4 {columnAccent} shadow-sm flex justify-between items-center group hover:border-slate-300 transition-colors"
+        class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md p-3 mb-3 rounded-xl border border-slate-200/60 dark:border-slate-700/60 border-t-4 {columnAccent} shadow-sm flex justify-between items-center group hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
     >
         <div class="flex items-center gap-2">
             <h2
-                class="text-sm font-bold text-slate-700 uppercase tracking-wider"
+                class="text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider"
             >
                 {title}
             </h2>
             <div
                 class="px-2 py-0.5 rounded-full text-[10px] font-bold {isAtCapacity
-                    ? 'bg-orange-100 text-orange-700 border border-orange-300 animate-pulse'
-                    : 'bg-slate-100 text-slate-500 border border-slate-200'}"
+                    ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 border border-orange-300 dark:border-orange-700 animate-pulse'
+                    : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600'}"
             >
                 {items.length}{wipLimit > 0 ? `/${wipLimit}` : ""}
             </div>
         </div>
         <button
-            class="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-all"
+            class="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 opacity-0 group-hover:opacity-100 transition-all"
         >
             <MoreHorizontal size={16} />
         </button>
     </div>
 
     <div
-        class="flex-1 overflow-y-auto px-1 py-1 rounded-xl bg-slate-100/50 min-h-[200px]"
+        class="flex-1 overflow-y-auto px-1 py-1 rounded-xl bg-slate-100/50 dark:bg-slate-800/50 min-h-[200px]"
         use:dndzone={{
             items,
             flipDurationMs,

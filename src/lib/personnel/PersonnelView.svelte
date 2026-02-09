@@ -191,19 +191,28 @@
 <div class="flex flex-col h-full space-y-6">
     <!-- Toolbar -->
     <div
-        class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
+        class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm"
     >
         <div class="flex items-center gap-4 w-full md:w-auto">
             <h2
-                class="text-lg font-semibold text-slate-800 flex items-center gap-2"
+                class="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2"
             >
-                <div class="p-1.5 bg-indigo-100 rounded-lg">
-                    <Award size={18} class="text-indigo-600" />
+                <div
+                    class="p-1.5 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg"
+                >
+                    <Award
+                        size={18}
+                        class="text-indigo-600 dark:text-indigo-400"
+                    />
                 </div>
                 Research Personnel
             </h2>
-            <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
-            <span class="text-sm text-slate-500 hidden md:block">
+            <div
+                class="h-6 w-px bg-slate-200 dark:bg-slate-700 hidden md:block"
+            ></div>
+            <span
+                class="text-sm text-slate-500 dark:text-slate-400 hidden md:block"
+            >
                 {filteredScientists.length} / {scientists.length} Active Researchers
             </span>
         </div>
@@ -217,13 +226,13 @@
                 <input
                     bind:value={searchQuery}
                     placeholder="Search personnel..."
-                    class="w-full md:w-64 pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    class="w-full md:w-64 pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                 />
             </div>
             <div class="relative">
                 <select
                     bind:value={selectedDepartment}
-                    class="appearance-none bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 pl-4 pr-10 py-2 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+                    class="appearance-none bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-800 dark:text-slate-200 pl-4 pr-10 py-2 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer"
                 >
                     <option value="">All Departments</option>
                     {#each departments as dep}
@@ -238,7 +247,7 @@
             <button
                 on:click={() =>
                     exportToCSV(filteredScientists, "personnel_list")}
-                class="px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors shadow-sm"
+                class="px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors shadow-sm"
                 title="Export List"
             >
                 <FileText size={18} />
@@ -257,13 +266,13 @@
                 <!-- Status Indicator -->
                 <div class="absolute top-4 right-4 flex items-center gap-2">
                     <span
-                        class="text-[10px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-slate-500 transition-colors"
+                        class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors"
                         >{scientist.status}</span
                     >
                     <span
                         class="w-2.5 h-2.5 rounded-full {getStatusColor(
                             scientist.status,
-                        )} ring-2 ring-white"
+                        )} ring-2 ring-white dark:ring-slate-800"
                         title={scientist.status === "busy" &&
                         scientist.expectedReturn
                             ? `Expected back: ${scientist.expectedReturn}`
@@ -278,13 +287,17 @@
                     >
                         {scientist.initials}
                     </div>
-                    <h3 class="font-bold text-slate-800 text-lg">
+                    <h3
+                        class="font-bold text-slate-800 dark:text-slate-100 text-lg"
+                    >
                         {scientist.name}
                     </h3>
-                    <p class="text-sm text-indigo-600 font-medium">
+                    <p
+                        class="text-sm text-indigo-600 dark:text-indigo-400 font-medium"
+                    >
                         {scientist.role}
                     </p>
-                    <p class="text-xs text-slate-500 mt-1">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
                         {scientist.department}
                     </p>
                 </div>
@@ -293,7 +306,7 @@
                 <div class="flex flex-wrap gap-2 justify-center mb-6 flex-1">
                     {#each scientist.tags as tag}
                         <span
-                            class="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-medium rounded-full border border-slate-200 h-fit"
+                            class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-medium rounded-full border border-slate-200 dark:border-slate-600 h-fit"
                         >
                             {tag}
                         </span>
@@ -301,12 +314,18 @@
                 </div>
 
                 <!-- Contact/Meta (pinned to bottom) -->
-                <div class="space-y-3 pt-4 border-t border-slate-100 mt-auto">
-                    <div class="flex items-center text-sm text-slate-600">
+                <div
+                    class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-700 mt-auto"
+                >
+                    <div
+                        class="flex items-center text-sm text-slate-600 dark:text-slate-400"
+                    >
                         <Mail size={14} class="mr-3 text-slate-400 shrink-0" />
                         <span class="truncate">{scientist.email}</span>
                     </div>
-                    <div class="flex items-center text-sm text-slate-600">
+                    <div
+                        class="flex items-center text-sm text-slate-600 dark:text-slate-400"
+                    >
                         <MapPin
                             size={14}
                             class="mr-3 text-slate-400 shrink-0"
@@ -320,12 +339,12 @@
                     class="mt-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                 >
                     <button
-                        class="flex-1 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded hover:bg-indigo-100 transition-colors"
+                        class="flex-1 py-1.5 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/70 transition-colors"
                     >
                         View Profile
                     </button>
                     <button
-                        class="flex-1 py-1.5 bg-white border border-slate-200 text-slate-600 text-xs font-semibold rounded hover:bg-slate-50 transition-colors"
+                        class="flex-1 py-1.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-xs font-semibold rounded hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
                     >
                         Message
                     </button>

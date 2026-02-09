@@ -128,17 +128,19 @@
     </div>
 
     <!-- Instrument Info -->
-    <h3 class="font-semibold text-slate-800 text-lg leading-tight mb-2">
+    <h3
+        class="font-semibold text-slate-800 dark:text-slate-100 text-lg leading-tight mb-2"
+    >
         {instrument.name}
     </h3>
 
-    <p class="text-sm text-slate-500 mb-4 line-clamp-2">
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2">
         {instrument.description}
     </p>
 
     <!-- Footer -->
     <div
-        class="flex items-center justify-between border-t border-slate-100 pt-3 mt-auto"
+        class="flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-3 mt-auto"
     >
         <span
             class="px-2 py-1 rounded text-xs font-medium border {getCategoryStyle(
@@ -162,20 +164,22 @@
                     on:click|stopPropagation={() =>
                         (notifyWhenAvailable = !notifyWhenAvailable)}
                     class="p-1.5 rounded-lg border transition-colors {notifyWhenAvailable
-                        ? 'bg-indigo-50 border-indigo-200 text-indigo-600'
-                        : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-slate-600 hover:border-slate-300'}"
+                        ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400'
+                        : 'bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-500'}"
                     title={notifyWhenAvailable
                         ? "Notification set"
                         : "Notify me when available"}
                 >
                     <Bell
                         size={14}
-                        class={notifyWhenAvailable ? "fill-indigo-600" : ""}
+                        class={notifyWhenAvailable
+                            ? "fill-indigo-600 dark:fill-indigo-400"
+                            : ""}
                     />
                 </button>
                 <button
                     disabled
-                    class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-600 text-sm font-medium rounded-lg border border-amber-200 cursor-not-allowed"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-sm font-medium rounded-lg border border-amber-200 dark:border-amber-700 cursor-not-allowed"
                 >
                     <Wrench size={14} />
                     Maintenance
@@ -184,7 +188,7 @@
         {:else}
             <button
                 disabled
-                class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-400 text-sm font-medium rounded-lg border border-slate-200 cursor-not-allowed"
+                class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 dark:bg-slate-700 text-slate-400 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-600 cursor-not-allowed"
             >
                 <Calendar size={14} />
                 Booked

@@ -134,12 +134,12 @@
         ></div>
 
         <div
-            class="relative w-full max-w-md bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up"
+            class="relative w-full max-w-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up"
         >
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h2
-                        class="text-lg font-bold text-slate-800 flex items-center gap-2"
+                        class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2"
                     >
                         {#if editingBooking}
                             <Save size={18} class="text-indigo-500" />
@@ -151,7 +151,7 @@
                     </h2>
                     <button
                         on:click={close}
-                        class="text-slate-400 hover:text-slate-600 transition-colors"
+                        class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                     >
                         <X size={20} />
                     </button>
@@ -162,13 +162,13 @@
                     <div>
                         <label
                             for="instrument-select"
-                            class="block text-xs font-semibold text-slate-500 mb-1 uppercase"
+                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase"
                             >Instrument</label
                         >
                         <select
                             id="instrument-select"
                             bind:value={selectedInstrumentId}
-                            class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+                            class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-2 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
                         >
                             {#each instruments.filter((i) => i.status !== "maintenance") as inst}
                                 <option value={inst.id}>{inst.name}</option>
@@ -180,7 +180,7 @@
                     <div>
                         <label
                             for="user-name"
-                            class="block text-xs font-semibold text-slate-500 mb-1 uppercase flex items-center gap-1"
+                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase flex items-center gap-1"
                         >
                             <User size={12} />
                             Your Name
@@ -188,7 +188,7 @@
                         <input
                             id="user-name"
                             bind:value={userName}
-                            class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400"
+                            class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-2 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                             placeholder="e.g. Dr. Smith"
                         />
                     </div>
@@ -197,7 +197,7 @@
                     <div>
                         <label
                             for="booking-date"
-                            class="block text-xs font-semibold text-slate-500 mb-1 uppercase flex items-center gap-1"
+                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase flex items-center gap-1"
                         >
                             <Calendar size={12} />
                             Date
@@ -208,10 +208,10 @@
                                 type="date"
                                 bind:value={startDate}
                                 min={new Date().toISOString().split("T")[0]}
-                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-transparent focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-2 text-transparent focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                             />
                             <div
-                                class="absolute inset-0 flex items-center px-4 pointer-events-none text-slate-800"
+                                class="absolute inset-0 flex items-center px-4 pointer-events-none text-slate-800 dark:text-slate-200"
                             >
                                 {#if startDate}
                                     {startDate.split("-").reverse().join("/")}
@@ -227,7 +227,7 @@
                         <div>
                             <label
                                 for="start-time"
-                                class="block text-xs font-semibold text-slate-500 mb-1 uppercase flex items-center gap-1"
+                                class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase flex items-center gap-1"
                             >
                                 <Clock size={12} />
                                 Start Time
@@ -235,7 +235,7 @@
                             <select
                                 id="start-time"
                                 bind:value={startTime}
-                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+                                class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-2 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
                             >
                                 {#each timeSlots as slot}
                                     <option value={slot}>{slot}</option>
@@ -245,7 +245,7 @@
                         <div>
                             <label
                                 for="end-time"
-                                class="block text-xs font-semibold text-slate-500 mb-1 uppercase flex items-center gap-1"
+                                class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase flex items-center gap-1"
                             >
                                 <Clock size={12} />
                                 End Time
@@ -253,7 +253,7 @@
                             <select
                                 id="end-time"
                                 bind:value={endTime}
-                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+                                class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-2 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
                             >
                                 {#each timeSlots as slot}
                                     <option value={slot}>{slot}</option>
@@ -266,7 +266,7 @@
                     <div>
                         <label
                             for="purpose"
-                            class="block text-xs font-semibold text-slate-500 mb-1 uppercase flex items-center gap-1"
+                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase flex items-center gap-1"
                         >
                             <FileText size={12} />
                             Purpose (Optional)
@@ -275,7 +275,7 @@
                             id="purpose"
                             bind:value={purpose}
                             rows="2"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none placeholder:text-slate-400"
+                            class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-2 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
                             placeholder="Sample analysis, training, etc."
                         ></textarea>
                     </div>

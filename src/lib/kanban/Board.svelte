@@ -358,7 +358,7 @@
             <!-- Collapsed Add Column Button (Settings-like) -->
             <div class="shrink-0 mx-1.5">
                 <button
-                    class="w-10 h-10 border border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-300 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all"
+                    class="w-10 h-10 border border-dashed border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-600 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-200 dark:hover:border-indigo-700 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/30 transition-all"
                     title="Add Column"
                 >
                     <Plus size={18} />

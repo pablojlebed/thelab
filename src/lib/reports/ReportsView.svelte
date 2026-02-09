@@ -7,6 +7,7 @@
         Filter,
         PieChart,
         Activity,
+        ShieldAlert,
     } from "lucide-svelte";
     import { exportToCSV } from "../utils/export";
     import { qualityStore } from "../stores/qualityStore";
@@ -36,16 +37,18 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-lg font-semibold text-slate-800">
+            <h2
+                class="text-lg font-semibold text-slate-800 dark:text-slate-100"
+            >
                 Operational Reports
             </h2>
-            <p class="text-sm text-slate-500">
+            <p class="text-sm text-slate-500 dark:text-slate-400">
                 Cross-module analytics and data export
             </p>
         </div>
         <div class="flex gap-2">
             <button
-                class="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-2"
+                class="px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 flex items-center gap-2"
             >
                 <Calendar size={16} />
                 Last 6 Months
@@ -63,18 +66,24 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="card-pastel p-5">
             <div class="flex items-center justify-between mb-2">
-                <h3 class="text-sm font-medium text-slate-500">
+                <h3
+                    class="text-sm font-medium text-slate-500 dark:text-slate-400"
+                >
                     Quality Compliance
                 </h3>
                 <Activity size={18} class="text-indigo-500" />
             </div>
             <div class="flex items-baseline gap-2">
-                <span class="text-2xl font-bold text-slate-800">{totalNCs}</span
+                <span
+                    class="text-2xl font-bold text-slate-800 dark:text-slate-100"
+                    >{totalNCs}</span
                 >
-                <span class="text-sm text-slate-500">Open NCs</span>
+                <span class="text-sm text-slate-500 dark:text-slate-400"
+                    >Open NCs</span
+                >
             </div>
             <div
-                class="mt-2 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded inline-block"
+                class="mt-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 py-1 rounded inline-block"
             >
                 Action Required
             </div>
@@ -82,35 +91,47 @@
 
         <div class="card-pastel p-5">
             <div class="flex items-center justify-between mb-2">
-                <h3 class="text-sm font-medium text-slate-500">
+                <h3
+                    class="text-sm font-medium text-slate-500 dark:text-slate-400"
+                >
                     Safety Status
                 </h3>
                 <ShieldAlert size={18} class="text-red-500" />
             </div>
             <div class="flex items-baseline gap-2">
-                <span class="text-2xl font-bold text-slate-800"
+                <span
+                    class="text-2xl font-bold text-slate-800 dark:text-slate-100"
                     >{openIncidents}</span
                 >
-                <span class="text-sm text-slate-500">Incidents</span>
+                <span class="text-sm text-slate-500 dark:text-slate-400"
+                    >Incidents</span
+                >
             </div>
-            <div class="mt-2 text-xs text-slate-500">
+            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
                 {totalDrafts} Draft Reports Pending
             </div>
         </div>
 
         <div class="card-pastel p-5">
             <div class="flex items-center justify-between mb-2">
-                <h3 class="text-sm font-medium text-slate-500">
+                <h3
+                    class="text-sm font-medium text-slate-500 dark:text-slate-400"
+                >
                     Instrument Health
                 </h3>
                 <Activity size={18} class="text-emerald-500" />
             </div>
             <div class="flex items-baseline gap-2">
-                <span class="text-2xl font-bold text-slate-800">92%</span>
-                <span class="text-sm text-slate-500">Uptime</span>
+                <span
+                    class="text-2xl font-bold text-slate-800 dark:text-slate-100"
+                    >92%</span
+                >
+                <span class="text-sm text-slate-500 dark:text-slate-400"
+                    >Uptime</span
+                >
             </div>
             <div
-                class="mt-2 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded inline-block"
+                class="mt-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded inline-block"
             >
                 Optimal Performance
             </div>
@@ -121,7 +142,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Chart -->
         <div class="lg:col-span-2 card-pastel p-6">
-            <h3 class="font-semibold text-slate-800 mb-6">
+            <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-6">
                 Instrument Utilization vs. Maintenance Costs
             </h3>
 
@@ -144,7 +165,7 @@
                             <!-- Utilization Bar (Background/Line implication) -->
                             <div
                                 style="height: {data.utilization}%"
-                                class="w-1/2 bg-indigo-200 rounded-t-sm transition-all group-hover:bg-indigo-300"
+                                class="w-1/2 bg-indigo-200 dark:bg-indigo-900/50 rounded-t-sm transition-all group-hover:bg-indigo-300 dark:group-hover:bg-indigo-800"
                             ></div>
                             <!-- Cost Bar (Foreground) -->
                             <div
@@ -153,7 +174,8 @@
                             ></div>
                         </div>
 
-                        <span class="text-xs font-medium text-slate-500"
+                        <span
+                            class="text-xs font-medium text-slate-500 dark:text-slate-400"
                             >{data.month}</span
                         >
                     </div>
@@ -161,10 +183,12 @@
             </div>
 
             <div
-                class="mt-6 flex items-center justify-center gap-6 text-xs text-slate-500"
+                class="mt-6 flex items-center justify-center gap-6 text-xs text-slate-500 dark:text-slate-400"
             >
                 <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 bg-indigo-200 rounded-sm"></span>
+                    <span
+                        class="w-3 h-3 bg-indigo-200 dark:bg-indigo-900/50 rounded-sm"
+                    ></span>
                     Utilization (%)
                 </div>
                 <div class="flex items-center gap-2">
@@ -177,33 +201,33 @@
         <!-- Export Hub -->
         <div class="card-pastel p-6">
             <h3
-                class="font-semibold text-slate-800 mb-4 flex items-center gap-2"
+                class="font-semibold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2"
             >
                 <Download size={18} class="text-slate-400" />
                 Data Export Hub
             </h3>
-            <p class="text-sm text-slate-500 mb-6">
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
                 Download aggregated reports and raw data logs.
             </p>
 
             <div class="space-y-3">
                 <button
-                    on:click={() =>
+                    onclick={() =>
                         exportToCSV(
                             utilizationData,
                             "monthly_utilization_report",
                         )}
-                    class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 hover:border-indigo-200 transition-all group"
+                    class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-indigo-200 dark:hover:border-indigo-700 transition-all group"
                 >
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform"
+                            class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform"
                         >
                             <BarChart2 size={16} />
                         </div>
                         <div class="text-left">
                             <span
-                                class="block text-sm font-medium text-slate-700 group-hover:text-indigo-700"
+                                class="block text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-400"
                                 >Utilization Report</span
                             >
                             <span class="block text-xs text-slate-400"
@@ -218,19 +242,18 @@
                 </button>
 
                 <button
-                    on:click={() =>
-                        exportToCSV($qualityStore, "quality_nc_log")}
-                    class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 hover:border-indigo-200 transition-all group"
+                    onclick={() => exportToCSV($qualityStore, "quality_nc_log")}
+                    class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-indigo-200 dark:hover:border-indigo-700 transition-all group"
                 >
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform"
+                            class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/50 text-red-600 dark:text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform"
                         >
                             <Activity size={16} />
                         </div>
                         <div class="text-left">
                             <span
-                                class="block text-sm font-medium text-slate-700 group-hover:text-indigo-700"
+                                class="block text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-400"
                                 >Quality NC Log</span
                             >
                             <span class="block text-xs text-slate-400"
@@ -245,19 +268,19 @@
                 </button>
 
                 <button
-                    on:click={() =>
+                    onclick={() =>
                         exportToCSV($safetyStore, "safety_incident_log")}
-                    class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 hover:border-indigo-200 transition-all group"
+                    class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-indigo-200 dark:hover:border-indigo-700 transition-all group"
                 >
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform"
+                            class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform"
                         >
                             <ShieldAlert size={16} />
                         </div>
                         <div class="text-left">
                             <span
-                                class="block text-sm font-medium text-slate-700 group-hover:text-indigo-700"
+                                class="block text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-400"
                                 >Safety Incidents</span
                             >
                             <span class="block text-xs text-slate-400"
