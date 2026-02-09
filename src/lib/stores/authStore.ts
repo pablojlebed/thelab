@@ -1,4 +1,5 @@
 import { writable, derived } from 'svelte/store';
+import { supabase } from '../supabase';
 
 export type User = {
     id: string;
@@ -34,11 +35,22 @@ function createAuthStore() {
 
     const { subscribe, set, update } = writable<AuthState>(initialState);
 
+    // Helper to map Supabase user to our User type
+    function mapSupabaseUser(supabaseUser: any): User {
+        return {
+            id: supabaseUser.id,
+            email: supabaseUser.email || '',
+            name: supabaseUser.user_metadata?.name || supabaseUser.email?.split('@')[0] || 'User',
+            role: supabaseUser.user_metadata?.role || 'analyst',
+            avatar: supabaseUser.user_metadata?.avatar,
+        };
+    }
+
     return {
         subscribe,
 
-        // Initialize auth - auto-login in dev mode
-        init: () => {
+        // Initialize auth - check for existing Supabase session
+        init: async () => {
             if (isDev) {
                 // Auto-authenticate in development mode
                 console.log('🔓 Dev mode: Auto-authenticating...');
@@ -47,72 +59,128 @@ function createAuthStore() {
                     isLoading: false,
                     error: null,
                 });
-            } else {
-                // In production, check for existing session
-                // This would typically check localStorage or a session cookie
-                const savedUser = localStorage.getItem('auth_user');
-                if (savedUser) {
-                    try {
-                        set({
-                            user: JSON.parse(savedUser),
-                            isLoading: false,
-                            error: null,
-                        });
-                    } catch {
-                        set({ user: null, isLoading: false, error: null });
-                    }
+                return;
+            }
+
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+
+                if (error) {
+                    console.error('Auth init error:', error);
+                    set({ user: null, isLoading: false, error: error.message });
+                    return;
+                }
+
+                if (session?.user) {
+                    set({
+                        user: mapSupabaseUser(session.user),
+                        isLoading: false,
+                        error: null,
+                    });
                 } else {
                     set({ user: null, isLoading: false, error: null });
                 }
+
+                // Listen for auth state changes
+                supabase.auth.onAuthStateChange((_event, session) => {
+                    if (session?.user) {
+                        set({
+                            user: mapSupabaseUser(session.user),
+                            isLoading: false,
+                            error: null,
+                        });
+                    } else {
+                        set({ user: null, isLoading: false, error: null });
+                    }
+                });
+            } catch (err) {
+                console.error('Auth init exception:', err);
+                set({ user: null, isLoading: false, error: 'Failed to initialize auth' });
             }
         },
 
-        // Login with credentials
+        // Login with email and password using Supabase Auth
         login: async (email: string, password: string) => {
             update(state => ({ ...state, isLoading: true, error: null }));
 
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 800));
-
-            // Demo credentials check (replace with real auth in production)
-            if (email === 'admin@radioanalysis.com' && password === 'admin123') {
-                const user: User = {
-                    id: 'user-001',
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
                     email,
-                    name: 'Pablo Lebed',
-                    role: 'admin',
-                };
+                    password,
+                });
 
-                if (!isDev) {
-                    localStorage.setItem('auth_user', JSON.stringify(user));
+                if (error) {
+                    set({ user: null, isLoading: false, error: error.message });
+                    return false;
                 }
 
-                set({ user, isLoading: false, error: null });
-                return true;
-            } else if (email === 'analyst@radioanalysis.com' && password === 'analyst123') {
-                const user: User = {
-                    id: 'user-002',
-                    email,
-                    name: 'Sarah Chen',
-                    role: 'analyst',
-                };
-
-                if (!isDev) {
-                    localStorage.setItem('auth_user', JSON.stringify(user));
+                if (data.user) {
+                    set({
+                        user: mapSupabaseUser(data.user),
+                        isLoading: false,
+                        error: null,
+                    });
+                    return true;
                 }
 
-                set({ user, isLoading: false, error: null });
-                return true;
+                set({ user: null, isLoading: false, error: 'Login failed' });
+                return false;
+            } catch (err) {
+                console.error('Login exception:', err);
+                set({ user: null, isLoading: false, error: 'An error occurred during login' });
+                return false;
             }
-
-            set({ user: null, isLoading: false, error: 'Invalid email or password' });
-            return false;
         },
 
-        // Logout
-        logout: () => {
-            localStorage.removeItem('auth_user');
-            set({ user: null, isLoading: false, error: null });
+        // Sign up with email and password
+        signUp: async (email: string, password: string, name?: string) => {
+            update(state => ({ ...state, isLoading: true, error: null }));
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            name: name || email.split('@')[0],
+                            role: 'analyst',
+                        },
+                    },
+                });
+
+                if (error) {
+                    set({ user: null, isLoading: false, error: error.message });
+                    return false;
+                }
+
+                if (data.user) {
+                    // Note: User might need to confirm email before being fully authenticated
+                    set({
+                        user: mapSupabaseUser(data.user),
+                        isLoading: false,
+                        error: null,
+                    });
+                    return true;
+                }
+
+                set({ user: null, isLoading: false, error: 'Sign up failed' });
+                return false;
+            } catch (err) {
+                console.error('Sign up exception:', err);
+                set({ user: null, isLoading: false, error: 'An error occurred during sign up' });
+                return false;
+            }
+        },
+
+        // Logout using Supabase Auth
+        logout: async () => {
+            try {
+                await supabase.auth.signOut();
+                set({ user: null, isLoading: false, error: null });
+            } catch (err) {
+                console.error('Logout exception:', err);
+                set({ user: null, isLoading: false, error: null });
+            }
         },
 
         // Clear error

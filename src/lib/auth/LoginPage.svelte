@@ -82,7 +82,7 @@
                             type="email"
                             bind:value={email}
                             class="block w-full pl-10 pr-3 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl leading-5 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-700 focus:border-indigo-400 dark:focus:border-indigo-500 sm:text-sm shadow-sm transition-all"
-                            placeholder="you@radioanalysis.com"
+                            placeholder="you@example.com"
                         />
                     </div>
                 </div>
