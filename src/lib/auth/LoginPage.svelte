@@ -136,35 +136,6 @@
                     {/if}
                 </button>
             </form>
-
-            <!-- Demo Credentials -->
-            <div
-                class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700"
-            >
-                <p class="text-xs text-slate-400 text-center mb-3">
-                    Demo Credentials
-                </p>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div class="p-2 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                        <p
-                            class="font-medium text-slate-600 dark:text-slate-300"
-                        >
-                            Admin
-                        </p>
-                        <p class="text-slate-400">admin@radioanalysis.com</p>
-                        <p class="text-slate-400">admin123</p>
-                    </div>
-                    <div class="p-2 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                        <p
-                            class="font-medium text-slate-600 dark:text-slate-300"
-                        >
-                            Analyst
-                        </p>
-                        <p class="text-slate-400">analyst@radioanalysis.com</p>
-                        <p class="text-slate-400">analyst123</p>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Dev Bypass Button -->
