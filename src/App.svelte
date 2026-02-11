@@ -23,6 +23,7 @@
         Layout,
         ArrowRight,
         LogOut,
+        Lock,
         Moon,
         Sun,
     } from "lucide-svelte";
@@ -34,6 +35,7 @@
     import QualityView from "./lib/quality/QualityView.svelte";
     import ReportsView from "./lib/reports/ReportsView.svelte";
     import LoginPage from "./lib/auth/LoginPage.svelte";
+    import ChangePasswordModal from "./lib/auth/ChangePasswordModal.svelte";
     import { safetyStore } from "./lib/stores/safetyStore";
     import {
         authStore,
@@ -46,6 +48,7 @@
     let activeTab = $state("hub");
     let isSidebarOpen = $state(true);
     let isDark = $state(false);
+    let showChangePassword = $state(false);
 
     // Auth state
     let authenticated = $state(false);
@@ -246,6 +249,13 @@
                                 .map((n: string) => n[0])
                                 .join("") || "U"}
                         </div>
+                        <button
+                            onclick={() => (showChangePassword = true)}
+                            class="p-2 text-slate-400 dark:text-slate-500 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
+                            title="Change Password"
+                        >
+                            <Lock class="w-4 h-4" />
+                        </button>
                         <button
                             onclick={handleLogout}
                             class="p-2 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
@@ -939,4 +949,8 @@
             </div>
         </main>
     </div>
+{/if}
+
+{#if showChangePassword}
+    <ChangePasswordModal onclose={() => (showChangePassword = false)} />
 {/if}

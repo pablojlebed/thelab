@@ -183,6 +183,24 @@ function createAuthStore() {
             }
         },
 
+        // Change password
+        changePassword: async (newPassword: string): Promise<{ success: boolean; error?: string }> => {
+            try {
+                const { error } = await supabase.auth.updateUser({
+                    password: newPassword,
+                });
+
+                if (error) {
+                    return { success: false, error: error.message };
+                }
+
+                return { success: true };
+            } catch (err) {
+                console.error('Change password exception:', err);
+                return { success: false, error: 'An error occurred while changing your password' };
+            }
+        },
+
         // Clear error
         clearError: () => {
             update(state => ({ ...state, error: null }));
