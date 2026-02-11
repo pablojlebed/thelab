@@ -296,7 +296,7 @@
                                     >
                                         {#each kanbanActiveUsers as user}
                                             <div
-                                                class={`inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-800 ${user.color || "bg-slate-400"} flex items-center justify-center text-xs text-white font-medium shadow-sm cursor-help`}
+                                                class={`flex items-center justify-center h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-800 ${user.color || "bg-slate-400"} text-xs leading-none text-white font-medium shadow-sm cursor-help`}
                                                 title={`On Board: ${user.name}`}
                                             >
                                                 {user.name[0]?.toUpperCase()}
