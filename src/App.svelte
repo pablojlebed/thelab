@@ -85,6 +85,7 @@
     let kanbanAssignee = $state("");
     let kanbanAssignees = $state<string[]>([]);
     let boardComponent: any = $state();
+    let kanbanActiveUsers = $state<any[]>([]); // Users currently present on the board
 
     function handleSimulateAlarm() {
         safetyStore.addDraft({
@@ -288,6 +289,21 @@
                                                 | "capa"
                                                 | "ci")}
                                     />
+
+                                    <!-- Presence Avatars -->
+                                    <div
+                                        class="hidden md:flex -space-x-2 mr-2 overflow-hidden"
+                                    >
+                                        {#each kanbanActiveUsers as user}
+                                            <div
+                                                class={`inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-800 ${user.color || "bg-slate-400"} flex items-center justify-center text-xs text-white font-medium shadow-sm cursor-help`}
+                                                title={`On Board: ${user.name}`}
+                                            >
+                                                {user.name[0]?.toUpperCase()}
+                                            </div>
+                                        {/each}
+                                    </div>
+
                                     <button
                                         onclick={() =>
                                             boardComponent.createTask()}
@@ -310,6 +326,8 @@
                                 bind:assignees={kanbanAssignees}
                                 context={kanbanContext}
                                 searchQuery={kanbanSearchQuery}
+                                on:presence={(e) =>
+                                    (kanbanActiveUsers = e.detail)}
                             />
                         </div>
                     {:else if activeTab === "hub"}

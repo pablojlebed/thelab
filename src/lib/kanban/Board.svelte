@@ -105,6 +105,7 @@
             .on("presence", { event: "sync" }, () => {
                 const state = realtimeChannel.presenceState();
                 activeUsers = Object.values(state).flatMap((s: any) => s);
+                dispatch("presence", activeUsers);
             })
             .on(
                 "postgres_changes",
@@ -421,25 +422,8 @@
             ></div>
         </div>
     {:else}
-        <div class="px-6 py-2 flex justify-end">
-            <div class="flex -space-x-2 overflow-hidden">
-                {#each activeUsers as user (user.user_id + user.presence_ref)}
-                    <div
-                        class={`inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-800 ${user.color || "bg-slate-400"} flex items-center justify-center text-xs text-white font-medium`}
-                        title={user.name}
-                    >
-                        {user.name[0]?.toUpperCase()}
-                    </div>
-                {/each}
-                {#if activeUsers.length === 0}
-                    <div class="text-xs text-slate-400 flex items-center h-8">
-                        OFFLINE
-                    </div>
-                {/if}
-            </div>
-        </div>
         <div
-            class="flex h-full overflow-x-auto p-2 md:p-6 items-start justify-start gap-4"
+            class="flex-1 min-h-0 overflow-x-auto p-2 md:p-6 items-start justify-start gap-4"
         >
             {#each columns as column (column.id)}
                 <Column
