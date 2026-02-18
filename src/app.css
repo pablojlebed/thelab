@@ -84,11 +84,11 @@
 
 @layer utilities {
   .glass {
-    @apply backdrop-blur-md bg-white/70 dark:bg-slate-800/70 border border-white/40 dark:border-slate-700/40 shadow-sm;
+    @apply backdrop-blur-md bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 shadow-sm;
   }
 
   .card-pastel {
-    @apply bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm rounded-xl transition-all duration-200;
+    @apply bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm rounded-md transition-all duration-200;
   }
 
   .status-available {

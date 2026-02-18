@@ -28,6 +28,8 @@
         Sun,
     } from "lucide-svelte";
     import Board from "./lib/kanban/Board.svelte";
+    import EDMSView from "./lib/edms/EDMSView.svelte";
+    import CAPAGuide from "./lib/edms/CAPAGuide.svelte";
     import ContextSelector from "./lib/kanban/ContextSelector.svelte";
     import BookingSystem from "./lib/booking/BookingSystem.svelte";
     import PersonnelView from "./lib/personnel/PersonnelView.svelte";
@@ -85,6 +87,7 @@
     let kanbanAssignee = $state("");
     let kanbanAssignees = $state<string[]>([]);
     let boardComponent: any = $state();
+    let showCAPAGuide = $state(false);
     let kanbanActiveUsers = $state<any[]>([]); // Users currently present on the board
 
     function handleSimulateAlarm() {
@@ -107,7 +110,7 @@
     >
         <div class="text-center">
             <div
-                class="w-12 h-12 rounded-xl bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center mx-auto mb-4 animate-pulse"
+                class="w-12 h-12 rounded-sm bg-blue-600 flex items-center justify-center mx-auto mb-4 animate-pulse"
             >
                 <Beaker class="w-6 h-6 text-white" />
             </div>
@@ -124,20 +127,20 @@
     >
         <!-- Sidebar -->
         <aside
-            class={`fixed inset-y-0 left-0 z-50 w-64 bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl border-r border-slate-200 dark:border-slate-700 transition-transform duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0`}
+            class={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 transition-transform duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0`}
         >
             <div class="h-full flex flex-col">
                 <!-- Logo Area -->
                 <div
-                    class="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-700"
+                    class="h-16 flex items-center px-6 border-b border-slate-800"
                 >
                     <div
-                        class="w-8 h-8 rounded-lg bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center mr-3 shadow-sm"
+                        class="w-7 h-7 rounded-sm bg-blue-600 flex items-center justify-center mr-3"
                     >
-                        <Beaker class="w-5 h-5 text-white" />
+                        <Beaker class="w-4 h-4 text-white" />
                     </div>
                     <span
-                        class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-linear-to-r from-slate-800 to-slate-600 dark:from-slate-100 dark:to-slate-400 theme-transition"
+                        class="font-semibold text-sm tracking-widest uppercase text-white"
                     >
                         RadioAnalysis
                     </span>
@@ -145,20 +148,20 @@
 
                 <!-- Navigation -->
                 <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                    {#each [{ id: "hub", label: "Control Center", icon: Home }, { id: "kanban", label: "Kanban Board", icon: Layout }, { id: "dashboard", label: "Dashboard", icon: Activity }, { id: "instruments", label: "Instruments", icon: Beaker }, { id: "personnel", label: "Personnel", icon: Users }, { id: "safety", label: "Safety & Incidents", icon: ShieldAlert }, { id: "quality", label: "Quality (ISO 17025)", icon: ClipboardCheck }, { id: "reports", label: "Reports", icon: FileText }] as item}
+                    {#each [{ id: "hub", label: "Control Center", icon: Home }, { id: "kanban", label: "Kanban Board", icon: Layout }, { id: "dashboard", label: "Dashboard", icon: Activity }, { id: "instruments", label: "Instruments", icon: Beaker }, { id: "personnel", label: "Personnel", icon: Users }, { id: "safety", label: "Safety & Incidents", icon: ShieldAlert }, { id: "quality", label: "Quality (ISO 17025)", icon: ClipboardCheck }, { id: "documents", label: "Documents", icon: FileCheck }, { id: "reports", label: "Reports", icon: FileText }] as item}
                         <button
-                            class={`w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
+                            class={`w-full flex items-center px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-150 group ${
                                 activeTab === item.id
-                                    ? "bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 shadow-sm ring-1 ring-indigo-200 dark:ring-indigo-500/30"
-                                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200"
+                                    ? "bg-white/10 text-white"
+                                    : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
                             }`}
                             onclick={() => (activeTab = item.id)}
                         >
                             <item.icon
-                                class={`w-5 h-5 mr-3 transition-colors ${
+                                class={`w-4 h-4 mr-3 transition-colors ${
                                     activeTab === item.id
-                                        ? "text-indigo-600 dark:text-indigo-400"
-                                        : "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300"
+                                        ? "text-blue-400"
+                                        : "text-slate-500 group-hover:text-slate-300"
                                 }`}
                             />
                             {item.label}
@@ -168,12 +171,12 @@
 
                 <!-- Bottom Actions -->
                 <div
-                    class="p-4 border-t border-slate-100 dark:border-slate-700"
+                    class="p-4 border-t border-slate-800"
                 >
                     <button
-                        class="flex items-center w-full px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                        class="flex items-center w-full px-3 py-2 text-sm font-medium text-slate-400 rounded-md hover:bg-white/5 hover:text-slate-100 transition-colors"
                     >
-                        <Settings class="w-5 h-5 mr-3 text-slate-400" />
+                        <Settings class="w-5 h-5 mr-3 text-slate-500" />
                         Settings
                     </button>
                 </div>
@@ -184,7 +187,7 @@
         <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
             <!-- Header -->
             <header
-                class="h-16 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border-b border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-40 transition-colors duration-300"
+                class="h-14 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-40 transition-colors duration-300"
             >
                 <button
                     class="md:hidden p-2 -ml-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-md"
@@ -197,7 +200,7 @@
                     <!-- Theme Toggle -->
                     <button
                         onclick={toggleTheme}
-                        class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                        class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
                         title={isDark
                             ? "Switch to light mode"
                             : "Switch to dark mode"}
@@ -243,7 +246,7 @@
                             </p>
                         </div>
                         <div
-                            class="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-medium text-sm"
+                            class="h-8 w-8 rounded-full bg-blue-50 dark:bg-blue-500/20 border border-blue-200 dark:border-blue-500/30 flex items-center justify-center text-blue-700 dark:text-blue-300 font-medium text-sm"
                         >
                             {user?.name
                                 ?.split(" ")
@@ -252,14 +255,14 @@
                         </div>
                         <button
                             onclick={() => (showChangePassword = true)}
-                            class="p-2 text-slate-400 dark:text-slate-500 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
+                            class="p-2 text-slate-400 dark:text-slate-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-md transition-colors"
                             title="Change Password"
                         >
                             <Lock class="w-4 h-4" />
                         </button>
                         <button
                             onclick={handleLogout}
-                            class="p-2 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                            class="p-2 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-colors"
                             title="Logout"
                         >
                             <LogOut class="w-4 h-4" />
@@ -274,9 +277,13 @@
                     <!-- Page Header -->
                     <div class="flex items-center justify-between">
                         <h1
-                            class="text-2xl font-semibold text-slate-900 dark:text-white capitalize"
+                            class="text-xl font-semibold tracking-tight text-slate-900 dark:text-white capitalize"
                         >
-                            {activeTab === "hub" ? "Control Center" : activeTab}
+                            {activeTab === "hub"
+                                    ? "Control Center"
+                                    : activeTab === "documents"
+                                      ? "Document Management"
+                                      : activeTab}
                         </h1>
                         <div class="flex space-x-3">
                             {#if activeTab === "kanban"}
@@ -304,10 +311,18 @@
                                         {/each}
                                     </div>
 
+                                    {#if kanbanContext === "capa"}
+                                        <button
+                                            onclick={() => (showCAPAGuide = true)}
+                                            class="px-4 py-2 rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors flex items-center gap-2"
+                                        >
+                                            How it works
+                                        </button>
+                                    {/if}
                                     <button
                                         onclick={() =>
                                             boardComponent.createTask()}
-                                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-indigo-700 shadow-indigo-200 transition-all flex items-center gap-2"
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-all flex items-center gap-2"
                                     >
                                         New Task
                                     </button>
@@ -318,7 +333,7 @@
 
                     {#if activeTab === "kanban"}
                         <div
-                            class="h-[calc(100vh-14rem)] bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 overflow-hidden"
+                            class="h-[calc(100vh-14rem)] bg-slate-50 dark:bg-slate-800/50 rounded-md border border-slate-200 dark:border-slate-700 overflow-hidden"
                         >
                             <Board
                                 bind:this={boardComponent}
@@ -341,7 +356,7 @@
                             </div>
                             <input
                                 type="text"
-                                class="block w-full pl-10 pr-3 py-3 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_0_0_4px_rgba(99,102,241,0.1)] sm:text-sm shadow-sm transition-all"
+                                class="block w-full pl-10 pr-3 py-3 border border-slate-200 dark:border-slate-700 rounded-md leading-5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 focus:border-blue-400 dark:focus:border-blue-500 sm:text-sm shadow-sm transition-all"
                                 placeholder="Search knowledge base, instruments, protocols..."
                             />
                         </div>
@@ -371,7 +386,7 @@
                                         class="grid grid-cols-2 sm:grid-cols-4 gap-4"
                                     >
                                         <button
-                                            class="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-500/50 transition-all group"
+                                            class="flex flex-col items-center justify-center p-4 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-500/50 transition-all group"
                                         >
                                             <div
                                                 class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform"
@@ -386,7 +401,7 @@
                                             >
                                         </button>
                                         <button
-                                            class="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-500/50 transition-all group"
+                                            class="flex flex-col items-center justify-center p-4 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-500/50 transition-all group"
                                         >
                                             <div
                                                 class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform"
@@ -401,7 +416,7 @@
                                             >
                                         </button>
                                         <button
-                                            class="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-500/50 transition-all group"
+                                            class="flex flex-col items-center justify-center p-4 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-500/50 transition-all group"
                                         >
                                             <div
                                                 class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform"
@@ -416,7 +431,7 @@
                                             >
                                         </button>
                                         <button
-                                            class="relative flex flex-col items-center justify-center p-4 rounded-xl border-2 border-red-300 dark:border-red-500/50 bg-linear-to-b from-red-50 to-red-100 dark:from-red-950/50 dark:to-red-900/30 hover:from-red-100 hover:to-red-200 dark:hover:from-red-900/50 dark:hover:to-red-800/40 hover:shadow-lg hover:border-red-400 dark:hover:border-red-400 transition-all group ring-2 ring-red-200/50 dark:ring-red-500/20"
+                                            class="relative flex flex-col items-center justify-center p-4 rounded-md border-2 border-red-300 dark:border-red-500/50 bg-linear-to-b from-red-50 to-red-100 dark:from-red-950/50 dark:to-red-900/30 hover:from-red-100 hover:to-red-200 dark:hover:from-red-900/50 dark:hover:to-red-800/40 hover:shadow-lg hover:border-red-400 dark:hover:border-red-400 transition-all group ring-2 ring-red-200/50 dark:ring-red-500/20"
                                             onclick={() => {
                                                 if (
                                                     !confirm(
@@ -579,7 +594,7 @@
                                             >Pending Tasks</span
                                         >
                                         <span
-                                            class="bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded font-medium"
+                                            class="bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-sm font-medium"
                                             >12</span
                                         >
                                     </div>
@@ -715,7 +730,7 @@
                                     <Users class="w-24 h-24" />
                                 </div>
                                 <h3
-                                    class="text-sm font-medium text-slate-500 dark:text-slate-400 text-sm mb-1"
+                                    class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1"
                                 >
                                     Lab Analysts
                                 </h3>
@@ -789,7 +804,7 @@
                                 </h3>
                                 <div class="grid grid-cols-2 gap-3">
                                     <button
-                                        class="p-3 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 border border-indigo-100 dark:border-indigo-500/30 rounded-lg text-left transition-colors group relative"
+                                        class="p-3 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 border border-indigo-100 dark:border-indigo-500/30 rounded-md text-left transition-colors group relative"
                                     >
                                         <ArrowRight
                                             size={14}
@@ -805,7 +820,7 @@
                                         >
                                     </button>
                                     <button
-                                        class="p-3 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 border border-amber-100 dark:border-amber-500/30 rounded-lg text-left transition-colors group relative"
+                                        class="p-3 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 border border-amber-100 dark:border-amber-500/30 rounded-md text-left transition-colors group relative"
                                     >
                                         <ArrowRight
                                             size={14}
@@ -821,7 +836,7 @@
                                         >
                                     </button>
                                     <button
-                                        class="p-3 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 border border-emerald-100 dark:border-emerald-500/30 rounded-lg text-left transition-colors group relative"
+                                        class="p-3 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 border border-emerald-100 dark:border-emerald-500/30 rounded-md text-left transition-colors group relative"
                                     >
                                         <ArrowRight
                                             size={14}
@@ -837,7 +852,7 @@
                                         >
                                     </button>
                                     <button
-                                        class="p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-left transition-colors group relative"
+                                        class="p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md text-left transition-colors group relative"
                                     >
                                         <ArrowRight
                                             size={14}
@@ -869,7 +884,7 @@
                                     </h3>
                                     <button
                                         onclick={handleSimulateAlarm}
-                                        class="text-xs text-red-600 dark:text-red-400 font-medium hover:text-red-700 dark:hover:text-red-300 border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10 px-2 py-1 rounded transition-colors"
+                                        class="text-xs text-red-600 dark:text-red-400 font-medium hover:text-red-700 dark:hover:text-red-300 border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10 px-2 py-1 rounded-sm transition-colors"
                                     >
                                         Simulate Alarm
                                     </button>
@@ -928,7 +943,7 @@
                         </div>
                     {:else if activeTab === "instruments"}
                         <div
-                            class="h-[calc(100vh-14rem)] bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 overflow-hidden"
+                            class="h-[calc(100vh-14rem)] bg-slate-50 dark:bg-slate-800/30 rounded-md border border-slate-200 dark:border-slate-700 overflow-hidden"
                         >
                             <div class="h-full p-4">
                                 <BookingSystem />
@@ -940,6 +955,8 @@
                         <SafetyView />
                     {:else if activeTab === "quality"}
                         <QualityView />
+                    {:else if activeTab === "documents"}
+                        <EDMSView />
                     {:else if activeTab === "reports"}
                         <ReportsView />
                     {:else}
@@ -971,4 +988,8 @@
 
 {#if showChangePassword}
     <ChangePasswordModal onclose={() => (showChangePassword = false)} />
+{/if}
+
+{#if showCAPAGuide}
+    <CAPAGuide onclose={() => (showCAPAGuide = false)} />
 {/if}

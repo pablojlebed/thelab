@@ -166,7 +166,7 @@
                     {task.owner ? task.owner.charAt(0).toUpperCase() : "?"}
                 </div>
                 <span
-                    class="text-xs font-medium text-slate-500 dark:text-slate-400 max-w-[70px] truncate"
+                    class="text-xs font-medium text-slate-500 dark:text-slate-400 max-w-17.5 truncate"
                 >
                     {task.owner}
                 </span>
